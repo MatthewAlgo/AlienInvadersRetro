@@ -24,6 +24,9 @@
     <ClCompile Include="AnimationWindowSource.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="PlayerStatsWindowSource.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MainWindowHeader.h">
@@ -35,12 +38,6 @@
     <ClInclude Include="AnimationWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ServerHeader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ClientHeader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="SimpleMusicEngine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -48,6 +45,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SpaceShipBullet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RandomParticlesGenerator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemySpaceShip.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemySpaceShipBullet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerStatsWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

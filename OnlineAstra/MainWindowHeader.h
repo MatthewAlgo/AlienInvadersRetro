@@ -1,11 +1,15 @@
 #pragma once
 #ifndef MAIN_WINDOW_HEADER_H
 #define MAIN_WINDOW_HEADER_H
+
 #pragma region INCLUDES
 #include "StructuresAndOtherFunctions.h"
+#include "RandomParticlesGenerator.h"
+
 #include <iostream>
 #include <thread>
 #include <functional>
+#include <string>
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
@@ -39,13 +43,13 @@ namespace MatthewsNamespace {
 		sf::Thread* MainWindowThread;
 		sf::VideoMode* MainWindowVideo;
 		// std::thread* STDMainWindowThread;
-
+		MatthewsNamespace::RandomParticlesGenerator* ParticleGenerator;
 		
 		// Variables related to the textures and design elements
 	public:
 
 		MainWindowClass(const std::string TITLE, int W, int H) : WindowTitle(TITLE), MainWindowVideo(new sf::VideoMode(W, H)), 
-				WWidth(static_cast<int>(W)), WHeight(static_cast<int>(H)) {
+				WWidth(static_cast<int>(W)), WHeight(static_cast<int>(H)), ParticleGenerator(new MatthewsNamespace::RandomParticlesGenerator()) {
 			// MainWindowThread = new sf::Thread(std::bind(&MainWindowClass::MainWindowThreadExecution,this, *TripleHolder));
 			MainWindowThread = new sf::Thread([&]() -> void {
 					// Create window and set active

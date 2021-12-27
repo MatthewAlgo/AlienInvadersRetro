@@ -1,5 +1,6 @@
 #include "MainWindowHeader.h"
 #include "AnimationWindow.h"
+#include "PlayerStatsWindow.h"
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 
@@ -38,9 +39,10 @@ void MatthewsNamespace::MainWindowClass::MainWindowThreadExecution(TripleItemHol
 				if (MyMouse.get()->getPosition(*WindowPointer).x >= 340 && MyMouse.get()->getPosition(*WindowPointer).x <= 630 
 						&& MyMouse.get()->getPosition(*WindowPointer).y >= 150 && MyMouse.get()->getPosition(*WindowPointer).y <= 250) {
 					
-					// The first (start) button is pressed -> Launch the game (animation window)
+					// The first (start) button is pressed -> Launch the game (animation window) and player stats window
 					MatthewsNamespace::AnimationWindow* MyMainWindow
 						= new MatthewsNamespace::AnimationWindow("AlienInvasionRetro", 1000, 700);
+					// MatthewsNamespace::PlayerStatsWindow* MyStatsWindow = new MatthewsNamespace::PlayerStatsWindow("PlayerStatus", 500, 500);
 
 				}
 				// 760-380 - BR second button | 200-280 - TL first button
@@ -58,7 +60,6 @@ void MatthewsNamespace::MainWindowClass::MainWindowThreadExecution(TripleItemHol
 			}
 			else if (Event->type == sf::Event::TextEntered){
 				if (Event->text.unicode < 128)
-					std::cout << "ASCII character typed: " << static_cast<char>(Event->text.unicode) << std::endl;
 					break;
 			}
 		}
@@ -75,6 +76,12 @@ void MatthewsNamespace::MainWindowClass::DrawInsideMainWindow(sf::RenderWindow* 
 	WINDOW->draw(MenuBox2.SPRITE);
 	WINDOW->draw(TextBTN1);
 	WINDOW->draw(TextBTN2);
+
+	// For the particle generator 
+	ParticleGenerator->Generate();
+
+	ParticleGenerator->InLoopForParticles(WINDOW);
+	ParticleGenerator->ClearMemory(WINDOW);
 
 	// Draw the greeting text for the main window
 	WINDOW->draw(GreetingText);
@@ -103,11 +110,11 @@ void MatthewsNamespace::MainWindowClass::RenderTextures(DoubleItemHolder<sf::Ren
 	// Render Font for text
 	GlobalWindowFont.loadFromFile("Fonts/Emulogic.ttf");
 	GreetingText.setFont(GlobalWindowFont);
-	GreetingText.setString("My Application");
+	GreetingText.setString("Alien Invasion - Retro");
 	GreetingText.setCharacterSize(24);
 	GreetingText.setFillColor(sf::Color::Blue);
 	GreetingText.setStyle(sf::Text::Bold);
-	GreetingText.setPosition(WWidth / 3.25, WHeight / 100);
+	GreetingText.setPosition(WWidth / 5, WHeight / 100);
 	
 	// For the first button
 	TextBTN1.setFont(GlobalWindowFont);
@@ -128,6 +135,6 @@ void MatthewsNamespace::MainWindowClass::RenderTextures(DoubleItemHolder<sf::Ren
 
 }
 void MatthewsNamespace::ShowWindowDetails(sf::RenderWindow* WINDOW, MatthewsNamespace::MainWindowClass* C) {
-
+	// Nothing here for now
 }
 #pragma endregion MAINCLASS_FUNC_IMPLEMENTATIONS

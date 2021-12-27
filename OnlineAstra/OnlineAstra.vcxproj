@@ -142,11 +142,14 @@
     <ClCompile Include="AnimationWindowSource.cpp" />
     <ClCompile Include="MainThread.cpp" />
     <ClCompile Include="MainWindowSource.cpp" />
+    <ClCompile Include="PlayerStatsWindowSource.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AnimationWindow.h" />
-    <ClInclude Include="ClientHeader.h" />
-    <ClInclude Include="ServerHeader.h" />
+    <ClInclude Include="EnemySpaceShip.h" />
+    <ClInclude Include="EnemySpaceShipBullet.h" />
+    <ClInclude Include="PlayerStatsWindow.h" />
+    <ClInclude Include="RandomParticlesGenerator.h" />
     <ClInclude Include="MainWindowHeader.h" />
     <ClInclude Include="SimpleMusicEngine.h" />
     <ClInclude Include="SpaceShip.h" />

@@ -18,10 +18,7 @@ int main()
 #endif
 
 	MatthewsNamespace::MainWindowClass* MyMainWindow;
-	MyMainWindow = new MatthewsNamespace::MainWindowClass("MainWindow", 1000, 500);
-
-	// MatthewsNamespace::ServerClass* MyServer;
-	// MyServer = new MatthewsNamespace::ServerClass(1337, "Hello from the other byte");
+	MyMainWindow = new MatthewsNamespace::MainWindowClass("AlienInvasion - Main Menu", 1000, 500);
 
 	std::cin.get();
 	return 0;

@@ -1,11 +1,12 @@
 #pragma once
-#ifndef SPACE_SHIP_BULLET_H
-#define SPACE_SHIP_BULLET_H
+#ifndef  ENEMY_SPACESHIP_BULLET_H
+#define ENEMY_SPACESHIP_BULLET_H
 
-#include "SpaceShip.h"
 
+#include "EnemySpaceShip.h"
+#pragma region ENEMY_SPACESHIP_BULLET
 namespace MatthewsNamespace {
-	class SpaceShipBullet {
+	class EnemySpaceShipBullet {
 	protected:
 		typedef struct Position {
 			double x, y;
@@ -17,19 +18,19 @@ namespace MatthewsNamespace {
 		sf::Vector2f WinSize;
 
 		unsigned int DAMAGE = 1;
-
 	public:
-		SpaceShipBullet(sf::Vector2f WindowSize, sf::Texture Texture) : WinSize(WindowSize), TextureOfSpaceShipBullet(Texture) {
+		static int DAMAGE_SUPPLIER;
+		EnemySpaceShipBullet(sf::Vector2f WindowSize, sf::Texture Texture) : WinSize(WindowSize), TextureOfSpaceShipBullet(Texture) {
 			POS.y = WindowSize.y / 2;
 			POS.x = WindowSize.x / 2;
 			// Set the position of the spaceship
 			SpriteOfSpaceShipBullet.setTexture(TextureOfSpaceShipBullet);
 			SpriteOfSpaceShipBullet.setPosition(sf::Vector2f(POS.x, POS.y));
 		}
-		SpaceShipBullet() = default;
-		~SpaceShipBullet() = default;
+		EnemySpaceShipBullet() = default;
+		~EnemySpaceShipBullet() = default;
 
-		inline void MoveUp() { POS.y -= 30; SpriteOfSpaceShipBullet.setPosition(POS.x, POS.y); }
+		inline void MoveDown() { POS.y += 10; SpriteOfSpaceShipBullet.setPosition(POS.x, POS.y); }
 
 		void setTexture(sf::Texture& texture) { TextureOfSpaceShipBullet = texture; SpriteOfSpaceShipBullet.setTexture(TextureOfSpaceShipBullet); } // Plus Sprite
 		void setTexture(std::string FileName) { TextureOfSpaceShipBullet.loadFromFile(FileName); SpriteOfSpaceShipBullet.setTexture(TextureOfSpaceShipBullet); } // Plus Sprite
@@ -41,7 +42,7 @@ namespace MatthewsNamespace {
 		sf::Texture* getSpaceShipBulletTexture() { return &TextureOfSpaceShipBullet; }
 		sf::Sprite* getSpaceShipBulletSprite() { return &SpriteOfSpaceShipBullet; }
 		sf::Vector2f getSpaceShipBulletPosition() { return sf::Vector2f(POS.x, POS.y); }
-		unsigned int* getDamage() { return &DAMAGE; }
 	};
 }
-#endif
+#pragma endregion ENEMY_SPACESHIP_BULLET
+#endif // ! ENEMY_SPACESHIP_BULLET_H

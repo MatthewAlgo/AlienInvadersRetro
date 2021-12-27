@@ -5,6 +5,8 @@
 #include "StructuresAndOtherFunctions.h"
 #include "MainWindowHeader.h"
 #include "SpaceShip.h"
+#include "RandomParticlesGenerator.h"
+#include "EnemySpaceShip.h"
 
 #include <thread>
 #include <functional>
@@ -31,8 +33,10 @@ namespace MatthewsNamespace {
 		const std::string WindowTitle;
 
 		std::unique_ptr<ImageToBeDrawn> BackGround;
+
 		sf::Font GlobalWindowFont;
-		sf::Text GreetingText;
+		sf::Text ScoreText, LivesText, GameOverText, PresskeyText, LevelUpText;
+
 		MatthewsNamespace::SpaceShip SpaceShip1, SpaceShip2;
 		std::unique_ptr<ImageToBeDrawn> WindowTitleTextbox;
 
@@ -40,11 +44,19 @@ namespace MatthewsNamespace {
 		sf::RenderWindow* WindowPointer = NULL;
 		sf::Thread* MainWindowThread;
 		sf::VideoMode* MainWindowVideo;
+		long long Player1Score=0, Player2Score=0;
+
+		MatthewsNamespace::RandomParticlesGenerator* ParticleGenerator;
+		std::vector<EnemySpaceShip*> VectorOfEnemies; int enemy_spawn_clock = 0; short Cnt1000 = 0;
+		short LevelUpConstant = 0;
 
 	public:
+
 		AnimationWindow(const std::string TITLE, int W, int H) : WindowTitle(TITLE), MainWindowVideo(new sf::VideoMode(W, H)),
-			WWidth(static_cast<int>(W)), WHeight(static_cast<int>(H)) {
+			WWidth(static_cast<int>(W)), WHeight(static_cast<int>(H)), ParticleGenerator(new MatthewsNamespace::RandomParticlesGenerator()) {
 			// MainWindowThread = new sf::Thread(std::bind(&MainWindowClass::MainWindowThreadExecution,this, *TripleHolder));
+			SpaceShip1.setMainWindowSize(WWidth, WHeight);
+
 			MainWindowThread = new sf::Thread([&]() -> void {
 				// Create window and set active
 				AnimationWindow::WindowPointer = new sf::RenderWindow(*MainWindowVideo, WindowTitle, sf::Style::Titlebar | sf::Style::Close); // Create the window

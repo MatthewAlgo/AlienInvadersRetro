@@ -20,7 +20,6 @@ int main()
 	MatthewsNamespace::MainWindowClass* MyMainWindow;
 	MyMainWindow = new MatthewsNamespace::MainWindowClass("AlienInvasion - Main Menu", 1000, 500);
 	MatthewsNamespace::BoomBox::INIT_BOOMBOX_MAIN();
-
 	std::cin.get();
 	return 0;
 }

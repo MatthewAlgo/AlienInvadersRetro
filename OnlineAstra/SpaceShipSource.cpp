@@ -1,5 +1,6 @@
 #include "SpaceShip.h"
 #include "EnemySpaceShip.h"
+#include "AnimationWindow.h"
 #include "BoomBox.h"
 
 void MatthewsNamespace::SpaceShip::Shoot() {

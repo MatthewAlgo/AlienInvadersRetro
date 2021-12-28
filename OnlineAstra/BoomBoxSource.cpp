@@ -37,8 +37,33 @@ void MatthewsNamespace::BoomBox::MainWindowThreadExecution(TripleItemHolder<sf::
 				std::unique_ptr<sf::Mouse> MyMouse = std::make_unique<sf::Mouse>();
 				std::cout << "XPos: " << MyMouse.get()->getPosition(*WindowPointer).x << " ; YPos: "
 					<< MyMouse.get()->getPosition(*WindowPointer).y << "\n";
-				
-
+				if(MyMouse.get()->getPosition(*WindowPointer).x >= 100 && MyMouse.get()->getPosition(*WindowPointer).y <=400)
+					if (MyMouse.get()->getPosition(*WindowPointer).y >= 350 && MyMouse.get()->getPosition(*WindowPointer).y <= 450) {
+						// Bottom button
+						if (MatthewsNamespace::BoomBox::IS_SOUND_ENABLED) {
+							MatthewsNamespace::BoomBox::IS_SOUND_ENABLED = false;
+						}
+						else { MatthewsNamespace::BoomBox::IS_SOUND_ENABLED = 1; }
+					}
+				if (MyMouse.get()->getPosition(*WindowPointer).x >= 100 && MyMouse.get()->getPosition(*WindowPointer).y <= 400)
+					if (MyMouse.get()->getPosition(*WindowPointer).y >= 20 && MyMouse.get()->getPosition(*WindowPointer).y <= 120) {
+						// Upper button
+						if (MatthewsNamespace::BoomBox::IS_MUSIC_ENABLED) {
+							MatthewsNamespace::BoomBox::IS_MUSIC_ENABLED = false;
+							// Stop the BoomBox for AnimationWinow
+							if (BoomBox::LocalDJ->SOUND_MAIN.getStatus() == sf::SoundSource::Status::Playing) {
+								BoomBox::LocalDJ->SOUND_MAIN.stop();
+								BoomBox::LocalDJ->SOUND_MAIN.resetBuffer();
+							}
+							// Stop the Main Window sound
+							if (BoomBox::LocalDJ->MainThemeSound.getStatus() == sf::SoundSource::Status::Playing) {
+								BoomBox::LocalDJ->MainThemeSound.stop();
+								BoomBox::LocalDJ->MainThemeSound.resetBuffer();
+							}
+						}
+						else { MatthewsNamespace::BoomBox::IS_MUSIC_ENABLED = 1; }
+						
+					}
 			}
 			else if (Event->type == sf::Event::KeyPressed) {
 				if (Event->key.code == sf::Keyboard::Escape) { // Exits on ESC pressed
@@ -61,15 +86,17 @@ void MatthewsNamespace::BoomBox::DrawInsideMainWindow(sf::RenderWindow* WINDOW, 
 	WINDOW->draw(BackGround->SPRITE);
 	WINDOW->draw(Speaker1.get()->SPRITE); // The first Speaker
 	WINDOW->draw(Speaker2.SPRITE); // The second Speaker
- 	
+	WINDOW->draw(SoundBox.SPRITE); // The box for sound
+	WINDOW->draw(MusicBox.SPRITE); // The box for music
+
 	WINDOW->display();
 }
 void MatthewsNamespace::BoomBox::RenderTextures(DoubleItemHolder<sf::RenderWindow, BoomBox> ITEM_HOLDER) {
 	// Inside a separate thread -> Background
 	BackGround = std::make_unique<ImageToBeDrawn>();
-	BackGround->TEXTURE.loadFromFile("TechWall.jpg");
+	BackGround->TEXTURE.loadFromFile("RetroSpeakers.jpg");
 	BackGround->SPRITE.setTexture(BackGround->TEXTURE);
-	BackGround->SPRITE.setScale(0.5, 0.5);
+	BackGround->SPRITE.setScale(1.5, 1.5);
 
 	Speaker1 = std::make_unique<ImageToBeDrawn>();
 	Speaker1->TEXTURE.loadFromFile("Speaker.png");
@@ -80,4 +107,16 @@ void MatthewsNamespace::BoomBox::RenderTextures(DoubleItemHolder<sf::RenderWindo
 	Speaker2.SPRITE.setTexture(Speaker1->TEXTURE);
 	Speaker2.SPRITE.setScale(0.1, 0.1);
 	Speaker2.SPRITE.setPosition(ITEM_HOLDER.getA()->getSize().x / 2, ITEM_HOLDER.getA()->getSize().y / 2 - 100);
+
+	// Sound Toggle
+	SoundBox.TEXTURE.loadFromFile("Rounded-Button.png");
+	SoundBox.SPRITE.setTexture(SoundBox.TEXTURE);
+	SoundBox.SPRITE.setPosition(WWidth / 4 - 25, -75);
+	SoundBox.SPRITE.setScale(0.5, 0.5);
+
+	// Music Toggle
+	MusicBox.TEXTURE.loadFromFile("Rounded-Button.png");
+	MusicBox.SPRITE.setTexture(MusicBox.TEXTURE);
+	MusicBox.SPRITE.setPosition(WWidth / 4 - 25, WHeight / 2);
+	MusicBox.SPRITE.setScale(0.5, 0.5);
 }

@@ -69,6 +69,11 @@ void MatthewsNamespace::MainWindowClass::MainWindowThreadExecution(TripleItemHol
 					break;
 			}
 		}
+		// Check For BoomBox Status
+		if(BoomBox::IS_MUSIC_ENABLED)
+			if (!(BoomBox::getMainTheme()->getStatus() == sf::SoundSource::Status::Playing)) {
+				BoomBox::getMainTheme()->play();
+			}
 		std::free(Event);
 		MatthewsNamespace::MainWindowClass::DrawInsideMainWindow(ITEM_HOLDER.getA(), ITEM_HOLDER.getB(), ITEM_HOLDER.getC());
 	}

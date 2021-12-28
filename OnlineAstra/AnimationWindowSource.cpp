@@ -25,6 +25,9 @@ void MatthewsNamespace::AnimationWindow::MainWindowThreadExecution(TripleItemHol
 	std::unique_ptr<DoubleItemHolder<sf::RenderWindow, AnimationWindow>> CurrentHolder = std::make_unique<DoubleItemHolder<sf::RenderWindow, AnimationWindow>>(WindowPointer, this);
 	RenderTextures(*CurrentHolder.get());
 	//////// Temporary - work in progress
+	if (!(BoomBox::LocalDJ->SOUND_MAIN.getStatus() == sf::SoundSource::Status::Playing)) {
+		MatthewsNamespace::BoomBox::RandomSongGenerator();
+	}
 
 
 	// Display main Window
@@ -50,6 +53,11 @@ void MatthewsNamespace::AnimationWindow::MainWindowThreadExecution(TripleItemHol
 				BoomBox::WindowSoundEffect();
 				if (BoomBox::getMainTheme()->getStatus() == sf::SoundSource::Status::Paused) {
 					BoomBox::getMainTheme()->play();
+				}
+				// Stop the BoomBox for AnimationWindow
+				if (BoomBox::LocalDJ->SOUND_MAIN.getStatus() == sf::SoundSource::Status::Playing) {
+					BoomBox::LocalDJ->SOUND_MAIN.stop();
+					BoomBox::LocalDJ->SOUND_MAIN.resetBuffer();
 				}
 				MainWindowThread->terminate();
 				break;
@@ -79,9 +87,14 @@ void MatthewsNamespace::AnimationWindow::MainWindowThreadExecution(TripleItemHol
 						SpaceShipBullet* it = SpaceShip1.BulletDeque.at(i);
 						delete it; it = nullptr; SpaceShip1.BulletDeque.erase(SpaceShip1.BulletDeque.begin() + i);
 					}
-					BoomBox::WindowSoundEffect();
+					BoomBox::WindowSoundEffect(); // Start the BoomBox for MainWindow
 					if (BoomBox::getMainTheme()->getStatus() == sf::SoundSource::Status::Paused) {
 						BoomBox::getMainTheme()->play();
+					}
+					// Stop the BoomBox for AnimationWinow
+					if (BoomBox::LocalDJ->SOUND_MAIN.getStatus() == sf::SoundSource::Status::Playing) {
+						BoomBox::LocalDJ->SOUND_MAIN.stop();
+						BoomBox::LocalDJ->SOUND_MAIN.resetBuffer();
 					}
 					MainWindowThread->terminate();
 					break;
@@ -98,6 +111,11 @@ void MatthewsNamespace::AnimationWindow::MainWindowThreadExecution(TripleItemHol
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {SpaceShip1.MoveUp();}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {SpaceShip1.MoveDown();}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {SpaceShip1.Shoot();}
+
+		// Check For BoomBox Status
+		if (!(BoomBox::LocalDJ->SOUND_MAIN.getStatus() == sf::SoundSource::Status::Playing)) {
+			MatthewsNamespace::BoomBox::RandomSongGenerator();
+		}
 
 		std::free(Event);
 		MatthewsNamespace::AnimationWindow::DrawInsideMainWindow(ITEM_HOLDER.getA(), ITEM_HOLDER.getB(), ITEM_HOLDER.getC());

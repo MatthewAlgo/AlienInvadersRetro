@@ -7,6 +7,7 @@
 #include "SpaceShip.h"
 #include "RandomParticlesGenerator.h"
 #include "EnemySpaceShip.h"
+#include "BoomBox.h"
 
 #include <thread>
 #include <functional>

@@ -2,8 +2,10 @@
 #ifndef  ENEMY_SPACESHIP_BULLET_H
 #define ENEMY_SPACESHIP_BULLET_H
 
+#include <SFML/Graphics.hpp>
+#include <SFML/Window.hpp>
+#include <SFML/System.hpp>
 
-#include "EnemySpaceShip.h"
 #pragma region ENEMY_SPACESHIP_BULLET
 namespace MatthewsNamespace {
 	class EnemySpaceShipBullet {

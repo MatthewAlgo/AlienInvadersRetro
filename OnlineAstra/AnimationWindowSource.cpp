@@ -3,6 +3,7 @@
 #include "EnemySpaceShip.h"
 #include "SpaceShip.h"
 #include "EnemySpaceShipBullet.h"
+#include "BoomBox.h"
 
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
@@ -46,6 +47,10 @@ void MatthewsNamespace::AnimationWindow::MainWindowThreadExecution(TripleItemHol
 					SpaceShipBullet* it = SpaceShip1.BulletDeque.at(i);
 					delete it; it = nullptr; SpaceShip1.BulletDeque.erase(SpaceShip1.BulletDeque.begin() + i);
 				}
+				BoomBox::WindowSoundEffect();
+				if (BoomBox::getMainTheme()->getStatus() == sf::SoundSource::Status::Paused) {
+					BoomBox::getMainTheme()->play();
+				}
 				MainWindowThread->terminate();
 				break;
 			}
@@ -73,6 +78,10 @@ void MatthewsNamespace::AnimationWindow::MainWindowThreadExecution(TripleItemHol
 					for (unsigned int i{}; i < SpaceShip1.BulletDeque.size(); i++) { // Manage and free up the memory
 						SpaceShipBullet* it = SpaceShip1.BulletDeque.at(i);
 						delete it; it = nullptr; SpaceShip1.BulletDeque.erase(SpaceShip1.BulletDeque.begin() + i);
+					}
+					BoomBox::WindowSoundEffect();
+					if (BoomBox::getMainTheme()->getStatus() == sf::SoundSource::Status::Paused) {
+						BoomBox::getMainTheme()->play();
 					}
 					MainWindowThread->terminate();
 					break;
@@ -118,7 +127,7 @@ void MatthewsNamespace::AnimationWindow::DrawInsideMainWindow(sf::RenderWindow* 
 			EnemySpaceShip Espace;
 			VectorOfEnemies.push_back(new EnemySpaceShip(Espace));
 			VectorOfEnemies.back()->setMainWindowSize(WINDOW->getSize().x, WINDOW->getSize().y);
-			VectorOfEnemies.back()->GenerateInDrawFunctionOfMainWindow(WINDOW);
+			VectorOfEnemies.back()->GenerateInDrawFunctionOfMainWindow(WINDOW, "EnemySpaceShip.png");
 			enemy_spawn_clock = MatthewsNamespace::RandomParticlesGenerator::Mersenne_Twister_Generator(60 + LevelUpConstant, 70 + LevelUpConstant);
 		}
 		for (int i{}; i < VectorOfEnemies.size(); ++i) {
@@ -173,6 +182,7 @@ void MatthewsNamespace::AnimationWindow::DrawInsideMainWindow(sf::RenderWindow* 
 		WINDOW->draw(GameOverText);
 		PresskeyText.setString("Press ESC Key To Continue");
 		WINDOW->draw(PresskeyText);
+		EnemySpaceShipBullet::DAMAGE_SUPPLIER = 0; // Reset the damage supplier
 		
 	}
 

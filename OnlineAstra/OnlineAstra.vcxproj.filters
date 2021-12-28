@@ -24,7 +24,13 @@
     <ClCompile Include="AnimationWindowSource.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerStatsWindowSource.cpp">
+    <ClCompile Include="BoomBoxSource.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemySpaceShipSource.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SpaceShipSource.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -36,9 +42,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="AnimationWindow.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SimpleMusicEngine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SpaceShip.h">
@@ -56,7 +59,7 @@
     <ClInclude Include="EnemySpaceShipBullet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerStatsWindow.h">
+    <ClInclude Include="BoomBox.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

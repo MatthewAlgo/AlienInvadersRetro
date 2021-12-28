@@ -2,7 +2,9 @@
 #ifndef SPACE_SHIP_BULLET_H
 #define SPACE_SHIP_BULLET_H
 
-#include "SpaceShip.h"
+#include <SFML/Graphics.hpp>
+#include <SFML/Window.hpp>
+#include <SFML/System.hpp>
 
 namespace MatthewsNamespace {
 	class SpaceShipBullet {

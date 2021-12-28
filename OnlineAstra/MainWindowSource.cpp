@@ -1,6 +1,6 @@
 #include "MainWindowHeader.h"
 #include "AnimationWindow.h"
-#include "PlayerStatsWindow.h"
+#include "BoomBox.h"
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 
@@ -42,13 +42,19 @@ void MatthewsNamespace::MainWindowClass::MainWindowThreadExecution(TripleItemHol
 					// The first (start) button is pressed -> Launch the game (animation window) and player stats window
 					MatthewsNamespace::AnimationWindow* MyMainWindow
 						= new MatthewsNamespace::AnimationWindow("AlienInvasionRetro", 1000, 700);
-					// MatthewsNamespace::PlayerStatsWindow* MyStatsWindow = new MatthewsNamespace::PlayerStatsWindow("PlayerStatus", 500, 500);
-
+					if (BoomBox::getMainTheme()->getStatus() == sf::SoundSource::Status::Playing) {
+						BoomBox::getMainTheme()->pause();
+					}
+					BoomBox::WindowSoundEffect();
 				}
 				// 760-380 - BR second button | 200-280 - TL first button
 				if (MyMouse.get()->getPosition(*WindowPointer).x >= 200 && MyMouse.get()->getPosition(*WindowPointer).x <= 760
 					&& MyMouse.get()->getPosition(*WindowPointer).y >= 280 && MyMouse.get()->getPosition(*WindowPointer).y <= 380) {
 					std::cout << "Second Button Pressed\n";
+
+					// Open The BoomBoxWindow
+					MatthewsNamespace::BoomBox* MyBoomBox = new MatthewsNamespace::BoomBox("BoomBox - Retro", 500, 500);
+					BoomBox::WindowSoundEffect();
 				}
 
 			}

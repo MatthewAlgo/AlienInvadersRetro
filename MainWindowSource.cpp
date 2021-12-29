@@ -3,6 +3,7 @@
 #include "BoomBox.h"
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
+#include <stdlib.h>
 
 #pragma region MAINCLASS_FUNC_IMPLEMENTATIONS
 void MatthewsNamespace::MainWindowClass::MainWindowThreadExecution(TripleItemHolder<sf::RenderWindow, sf::Thread, MainWindowClass>& ITEM_HOLDER) {
@@ -28,6 +29,7 @@ void MatthewsNamespace::MainWindowClass::MainWindowThreadExecution(TripleItemHol
 		while (ITEM_HOLDER.getA()->pollEvent(*Event)) {
 			if (Event->type == sf::Event::Closed) {
 				ITEM_HOLDER.getA()->close();
+				exit(EXIT_SUCCESS);
 				break;
 			}
 			else if (Event->type == sf::Event::MouseButtonReleased) {
@@ -69,6 +71,7 @@ void MatthewsNamespace::MainWindowClass::MainWindowThreadExecution(TripleItemHol
 			else if (Event->type == sf::Event::KeyPressed) {
 				if (Event->key.code == sf::Keyboard::Escape) { // Exits on ESC pressed
 					ITEM_HOLDER.getA()->close();
+					exit(EXIT_SUCCESS);
 					break;
 				}
 			}
@@ -81,6 +84,11 @@ void MatthewsNamespace::MainWindowClass::MainWindowThreadExecution(TripleItemHol
 		if ((BoomBox::IS_MUSIC_ENABLED == 1) && ((BoomBox::getMainTheme()->getStatus() == sf::SoundSource::Status::Paused)
 			|| (BoomBox::getMainTheme()->getStatus() == sf::SoundSource::Status::Stopped)) && (AnimationWindow::ANIMATION_INSTANCES == 0)){
 				BoomBox::StartMainThemeSong();
+		}
+		else {
+			if (AnimationWindow::ANIMATION_INSTANCES == 1) {
+				BoomBox::getMainTheme()->stop();
+			}
 		}
 		std::free(Event);
 		MatthewsNamespace::MainWindowClass::DrawInsideMainWindow(ITEM_HOLDER.getA(), ITEM_HOLDER.getB(), ITEM_HOLDER.getC());

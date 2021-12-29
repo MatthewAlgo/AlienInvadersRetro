@@ -19,7 +19,7 @@ void MatthewsNamespace::AnimationWindow::MainWindowThreadExecution(TripleItemHol
 	// Main Window Settings
 	ITEM_HOLDER.getA()->setActive(true);
 	ITEM_HOLDER.getA()->setVerticalSyncEnabled(true);
-	ITEM_HOLDER.getA()->setFramerateLimit(60);
+	ITEM_HOLDER.getA()->setFramerateLimit(30);
 	ANIMATION_INSTANCES = 1;
 	//////// Create a separate thread to render the textures
 	if (!((BoomBox::getMainTheme()->getStatus() == sf::SoundSource::Status::Paused) || (BoomBox::getMainTheme()->getStatus() == sf::SoundSource::Status::Stopped))) {
@@ -40,38 +40,7 @@ void MatthewsNamespace::AnimationWindow::MainWindowThreadExecution(TripleItemHol
 		while (ITEM_HOLDER.getA()->pollEvent(*Event)) {
 			if (Event->type == sf::Event::Closed) {
 				// Clean up memory occupied by the window
-				ITEM_HOLDER.getA()->close();
-				delete MainWindowVideo;
-
-				// Delete players and their bullets
-				for (int i{}; i < VectorOfEnemies.size(); ++i) {
-					VectorOfEnemies.at(i)->Die();
-					EnemySpaceShip* Iterator = VectorOfEnemies.at(i);
-					delete Iterator;
-					VectorOfEnemies.erase(VectorOfEnemies.begin() + i);
-				}
-				for (unsigned int i{}; i < SpaceShip1.BulletDeque.size(); i++) { // Manage and free up the memory
-					SpaceShipBullet* it = SpaceShip1.BulletDeque.at(i);
-					delete it; it = nullptr; SpaceShip1.BulletDeque.erase(SpaceShip1.BulletDeque.begin() + i);
-				}
-				BoomBox::WindowSoundEffect();
-				if ((BoomBox::getMainTheme()->getStatus() == sf::SoundSource::Status::Paused) || (BoomBox::getMainTheme()->getStatus() == sf::SoundSource::Status::Stopped)) {
-					BoomBox::StartMainThemeSong();
-				}
-				// Stop the BoomBox for AnimationWindow
-				if (BoomBox::LocalDJ->SOUND_MAIN.getStatus() == sf::SoundSource::Status::Playing) {
-					BoomBox::LocalDJ->SOUND_MAIN.stop();
-					BoomBox::LocalDJ->SOUND_MAIN.resetBuffer();
-				}
-				ANIMATION_INSTANCES = 0;
-				MainWindowThread->terminate();
-				break;
-			}
-			else if (Event->type == sf::Event::MouseButtonReleased) {}
-			else if (Event->type == sf::Event::KeyPressed) {
-				
-				if (Event->key.code == sf::Keyboard::Escape) { // Exits on ESC pressed
-					// Clean up memory occupied by the window
+				try {
 					ITEM_HOLDER.getA()->close();
 					delete MainWindowVideo;
 
@@ -86,17 +55,53 @@ void MatthewsNamespace::AnimationWindow::MainWindowThreadExecution(TripleItemHol
 						SpaceShipBullet* it = SpaceShip1.BulletDeque.at(i);
 						delete it; it = nullptr; SpaceShip1.BulletDeque.erase(SpaceShip1.BulletDeque.begin() + i);
 					}
-					BoomBox::WindowSoundEffect(); // Start the BoomBox for MainWindow
+					BoomBox::WindowSoundEffect();
 					if ((BoomBox::getMainTheme()->getStatus() == sf::SoundSource::Status::Paused) || (BoomBox::getMainTheme()->getStatus() == sf::SoundSource::Status::Stopped)) {
 						BoomBox::StartMainThemeSong();
 					}
-					// Stop the BoomBox for AnimationWinow
+					// Stop the BoomBox for AnimationWindow
 					if (BoomBox::LocalDJ->SOUND_MAIN.getStatus() == sf::SoundSource::Status::Playing) {
 						BoomBox::LocalDJ->SOUND_MAIN.stop();
 						BoomBox::LocalDJ->SOUND_MAIN.resetBuffer();
 					}
 					ANIMATION_INSTANCES = 0;
 					MainWindowThread->terminate();
+				}
+				catch (std::exception E) {}
+				break;
+			}
+			else if (Event->type == sf::Event::MouseButtonReleased) {}
+			else if (Event->type == sf::Event::KeyPressed) {
+				if (Event->key.code == sf::Keyboard::Escape) { // Exits on ESC pressed
+					try {
+						// Clean up memory occupied by the window
+						ITEM_HOLDER.getA()->close();
+						delete MainWindowVideo;
+
+						// Delete players and their bullets
+						for (int i{}; i < VectorOfEnemies.size(); ++i) {
+							VectorOfEnemies.at(i)->Die();
+							EnemySpaceShip* Iterator = VectorOfEnemies.at(i);
+							delete Iterator;
+							VectorOfEnemies.erase(VectorOfEnemies.begin() + i);
+						}
+						for (unsigned int i{}; i < SpaceShip1.BulletDeque.size(); i++) { // Manage and free up the memory
+							SpaceShipBullet* it = SpaceShip1.BulletDeque.at(i);
+							delete it; it = nullptr; SpaceShip1.BulletDeque.erase(SpaceShip1.BulletDeque.begin() + i);
+						}
+						BoomBox::WindowSoundEffect(); // Start the BoomBox for MainWindow
+						if ((BoomBox::getMainTheme()->getStatus() == sf::SoundSource::Status::Paused) || (BoomBox::getMainTheme()->getStatus() == sf::SoundSource::Status::Stopped)) {
+							BoomBox::StartMainThemeSong();
+						}
+						// Stop the BoomBox for AnimationWinow
+						if (BoomBox::LocalDJ->SOUND_MAIN.getStatus() == sf::SoundSource::Status::Playing) {
+							BoomBox::LocalDJ->SOUND_MAIN.stop();
+							BoomBox::LocalDJ->SOUND_MAIN.resetBuffer();
+						}
+						ANIMATION_INSTANCES = 0;
+						MainWindowThread->terminate();
+					}
+					catch (std::exception E) {}
 					break;
 				}
 				

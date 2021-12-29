@@ -2,7 +2,7 @@ Hey there!
 
 Do you remember those days when time passed very quickly when you played games like Chicken Invaders? It's time to bring  those days back with AlienInvasionRetro! Embark on the ship and try to shoot down as many aliens as possible. Be careful, though, because they become more and more dangerous!
 
-Linux compile command: g++ -g -v AnimationWindowSource.cpp BoomBoxSource.cpp EnemySpaceShipSource.cpp MainThread.cpp MainWindowSource.cpp SpaceShipSource.cpp -lsfml-graphics -lsfml-window -lsfml-audio -lsfml-system -lX11
+Linux compile command: g++ -g -std=c++17 -v AnimationWindowSource.cpp BoomBoxSource.cpp EnemySpaceShipSource.cpp MainThread.cpp MainWindowSource.cpp SpaceShipSource.cpp -lsfml-graphics -lsfml-window -lsfml-audio -lsfml-system -lX11
 
 Jocul este realizat sub licenta (MatthewAlgo C 2021 - MIT License)
 
@@ -25,9 +25,9 @@ Incarcarea tuturor texturilor si sprite-urilor la inceputul programului si folos
 
 Folosirea capabilitatii de multithreading a proceselor si ferestrelor
 
-Disponibilitate pe mai multe platforme (Testat pe Linux si Windows) - datorita librariilor folosite si a comenzilor de preprocesor (Linux depinde de libraria X11 - este linkata de g++)
+Disponibilitate pe mai multe platforme (Testat pe Linux si Windows) - datorita librariilor folosite si a comenzilor de preprocesor (Linux depinde de libraria X11 - este link-ata de g++)
 
-Folosirea motorului eficient de randomizare Mersennes Twister - generarea si incarcarea fisierelor .WAW din folder + diferite utilizari (functie statica in cadrul unei clase - poate fi accesata oricand)
+Folosirea motorului eficient de randomizare Mersenne's Twister - generarea si incarcarea fisierelor .WAV din folder + diferite utilizari (functie statica in cadrul unei clase - poate fi accesata oricand)
 
 --------------------
 

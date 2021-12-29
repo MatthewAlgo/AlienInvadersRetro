@@ -12,6 +12,7 @@
 
 #pragma region MAINCLASS_FUNC_IMPLEMENTATIONS
 int MatthewsNamespace::EnemySpaceShipBullet::DAMAGE_SUPPLIER = 0;
+int MatthewsNamespace::AnimationWindow::ANIMATION_INSTANCES = 0;
 
 void MatthewsNamespace::AnimationWindow::MainWindowThreadExecution(TripleItemHolder<sf::RenderWindow, sf::Thread, AnimationWindow>& ITEM_HOLDER) {
 	sf::WindowHandle handle = ITEM_HOLDER.getA()->getSystemHandle(); // Use the handle with OS specific functions
@@ -19,8 +20,11 @@ void MatthewsNamespace::AnimationWindow::MainWindowThreadExecution(TripleItemHol
 	ITEM_HOLDER.getA()->setActive(true);
 	ITEM_HOLDER.getA()->setVerticalSyncEnabled(true);
 	ITEM_HOLDER.getA()->setFramerateLimit(60);
-
+	ANIMATION_INSTANCES = 1;
 	//////// Create a separate thread to render the textures
+	if (!((BoomBox::getMainTheme()->getStatus() == sf::SoundSource::Status::Paused) || (BoomBox::getMainTheme()->getStatus() == sf::SoundSource::Status::Stopped))) {
+		BoomBox::getMainTheme()->pause();
+	}
 	std::unique_ptr<sf::Thread> ThreadRenderer = std::make_unique<sf::Thread>([&]()->void {}); // TODO: Render Textures Asynchronously
 	std::unique_ptr<DoubleItemHolder<sf::RenderWindow, AnimationWindow>> CurrentHolder = std::make_unique<DoubleItemHolder<sf::RenderWindow, AnimationWindow>>(WindowPointer, this);
 	RenderTextures(*CurrentHolder.get());
@@ -29,7 +33,7 @@ void MatthewsNamespace::AnimationWindow::MainWindowThreadExecution(TripleItemHol
 		MatthewsNamespace::BoomBox::RandomSongGenerator();
 	}
 
-
+	BoomBox::WelcomeEffect();
 	// Display main Window
 	while (ITEM_HOLDER.getA()->isOpen()) {
 		sf::Event* Event = new sf::Event();
@@ -51,24 +55,19 @@ void MatthewsNamespace::AnimationWindow::MainWindowThreadExecution(TripleItemHol
 					delete it; it = nullptr; SpaceShip1.BulletDeque.erase(SpaceShip1.BulletDeque.begin() + i);
 				}
 				BoomBox::WindowSoundEffect();
-				if (BoomBox::getMainTheme()->getStatus() == sf::SoundSource::Status::Paused) {
-					BoomBox::getMainTheme()->play();
+				if ((BoomBox::getMainTheme()->getStatus() == sf::SoundSource::Status::Paused) || (BoomBox::getMainTheme()->getStatus() == sf::SoundSource::Status::Stopped)) {
+					BoomBox::StartMainThemeSong();
 				}
 				// Stop the BoomBox for AnimationWindow
 				if (BoomBox::LocalDJ->SOUND_MAIN.getStatus() == sf::SoundSource::Status::Playing) {
 					BoomBox::LocalDJ->SOUND_MAIN.stop();
 					BoomBox::LocalDJ->SOUND_MAIN.resetBuffer();
 				}
+				ANIMATION_INSTANCES = 0;
 				MainWindowThread->terminate();
 				break;
 			}
-			else if (Event->type == sf::Event::MouseButtonReleased) {
-				std::cout << "Mouse button clicked\n";
-				std::unique_ptr<sf::Mouse> MyMouse = std::make_unique<sf::Mouse>();
-				std::cout << "XPos: " << MyMouse.get()->getPosition(*WindowPointer).x << " ; YPos: "
-					<< MyMouse.get()->getPosition(*WindowPointer).y << "\n";
-			}
-			
+			else if (Event->type == sf::Event::MouseButtonReleased) {}
 			else if (Event->type == sf::Event::KeyPressed) {
 				
 				if (Event->key.code == sf::Keyboard::Escape) { // Exits on ESC pressed
@@ -88,14 +87,15 @@ void MatthewsNamespace::AnimationWindow::MainWindowThreadExecution(TripleItemHol
 						delete it; it = nullptr; SpaceShip1.BulletDeque.erase(SpaceShip1.BulletDeque.begin() + i);
 					}
 					BoomBox::WindowSoundEffect(); // Start the BoomBox for MainWindow
-					if (BoomBox::getMainTheme()->getStatus() == sf::SoundSource::Status::Paused) {
-						BoomBox::getMainTheme()->play();
+					if ((BoomBox::getMainTheme()->getStatus() == sf::SoundSource::Status::Paused) || (BoomBox::getMainTheme()->getStatus() == sf::SoundSource::Status::Stopped)) {
+						BoomBox::StartMainThemeSong();
 					}
 					// Stop the BoomBox for AnimationWinow
 					if (BoomBox::LocalDJ->SOUND_MAIN.getStatus() == sf::SoundSource::Status::Playing) {
 						BoomBox::LocalDJ->SOUND_MAIN.stop();
 						BoomBox::LocalDJ->SOUND_MAIN.resetBuffer();
 					}
+					ANIMATION_INSTANCES = 0;
 					MainWindowThread->terminate();
 					break;
 				}
@@ -110,7 +110,7 @@ void MatthewsNamespace::AnimationWindow::MainWindowThreadExecution(TripleItemHol
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {SpaceShip1.MoveRight();}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {SpaceShip1.MoveUp();}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {SpaceShip1.MoveDown();}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {SpaceShip1.Shoot();}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {SpaceShip1.Shoot(Player1Score);}
 
 		// Check For BoomBox Status
 		if (!(BoomBox::LocalDJ->SOUND_MAIN.getStatus() == sf::SoundSource::Status::Playing)) {
@@ -169,15 +169,24 @@ void MatthewsNamespace::AnimationWindow::DrawInsideMainWindow(sf::RenderWindow* 
 		ParticleGenerator->ClearMemory(WINDOW);
 
 		// If the score % 10000 == 0 - increase the difficulty - enemies have more life
-		if (Player1Score % 10000 == 0 && Player1Score != 0) {
-			// LevelUpText.setString("Level Up!");
-			// WINDOW->draw(LevelUpText); 
+		if (Player1Score % 10'000 == 0 && Player1Score != 0) {
 			Cnt1000++; if (Cnt1000 == 1) {
 				// Do stuff to be executed once
+				if (Player1Score == 50'000) {
+					BoomBox::UpgradeEffect(); // Switch to double cannon configuration
+				}
+				if (Player1Score == 100'000) {
+					BoomBox::UpgradeEffect(); // Switch to triple cannon configuration
+				}
+				if ((Player1Score > 100'000) && (Player1Score % 20'000 == 0)) {
+					EnemySpaceShip::LIFE_SUPPLIER++;
+					BoomBox::EvilEffect();
+				}
 				if (LevelUpConstant + 5 <= 25) // 5 Difficulty Levels
 					LevelUpConstant += 5;
 				else
-					EnemySpaceShipBullet::DAMAGE_SUPPLIER++;
+					if(Player1Score % 20'000)
+						EnemySpaceShipBullet::DAMAGE_SUPPLIER++;
 			}else {Cnt1000 = 2;}
 		}else {Cnt1000 = 0;}
 	}
@@ -200,7 +209,8 @@ void MatthewsNamespace::AnimationWindow::DrawInsideMainWindow(sf::RenderWindow* 
 		WINDOW->draw(GameOverText);
 		PresskeyText.setString("Press ESC Key To Continue");
 		WINDOW->draw(PresskeyText);
-		EnemySpaceShipBullet::DAMAGE_SUPPLIER = 0; // Reset the damage supplier
+		EnemySpaceShipBullet::DAMAGE_SUPPLIER = 0; // Reset the enemy damage supplier
+		EnemySpaceShip::LIFE_SUPPLIER = 0; // Reset the enemy life supplier
 		
 	}
 

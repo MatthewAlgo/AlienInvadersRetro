@@ -3,14 +3,45 @@
 #include "AnimationWindow.h"
 #include "BoomBox.h"
 
-void MatthewsNamespace::SpaceShip::Shoot() {
+void MatthewsNamespace::SpaceShip::Shoot(int PlayerScore) {
 	// Load the bullet -> The bullet receives some speed of +10 per frame
 	// The initial bullet / shuttle
 	SpaceShipBullet CurrentBullet;
-	BulletDeque.push_back(new SpaceShipBullet(CurrentBullet));
-	BulletDeque.back()->setTexture("NeonVertical.png");
-	BulletDeque.back()->scaleSpaceShipBullet(0.25, 0.25);
-	BulletDeque.back()->setSpaceShipBulletPosition(POS.x + 13, POS.y - 40); // Front Bullet
+	if (PlayerScore < 50'000) {
+		BulletDeque.push_back(new SpaceShipBullet(CurrentBullet));
+		BulletDeque.back()->setTexture("NeonVertical.png");
+		BulletDeque.back()->scaleSpaceShipBullet(0.25, 0.25);
+		BulletDeque.back()->setSpaceShipBulletPosition(POS.x + 13, POS.y - 40); // Front Bullet
+	}
+	else if (PlayerScore >= 50'000 && PlayerScore < 100'000) {
+		// Side bullets upgrade
+		BulletDeque.push_back(new SpaceShipBullet(CurrentBullet));
+		BulletDeque.back()->setTexture("NeonVertical.png");
+		BulletDeque.back()->scaleSpaceShipBullet(0.25, 0.25);
+		BulletDeque.back()->setSpaceShipBulletPosition(POS.x, POS.y - 40);
+
+		BulletDeque.push_back(new SpaceShipBullet(CurrentBullet));
+		BulletDeque.back()->setTexture("NeonVertical.png");
+		BulletDeque.back()->scaleSpaceShipBullet(0.25, 0.25);
+		BulletDeque.back()->setSpaceShipBulletPosition(POS.x+26, POS.y - 40);
+	}
+	else {
+		// Triple shot
+		BulletDeque.push_back(new SpaceShipBullet(CurrentBullet));
+		BulletDeque.back()->setTexture("NeonVertical.png");
+		BulletDeque.back()->scaleSpaceShipBullet(0.25, 0.25);
+		BulletDeque.back()->setSpaceShipBulletPosition(POS.x, POS.y - 40);
+
+		BulletDeque.push_back(new SpaceShipBullet(CurrentBullet));
+		BulletDeque.back()->setTexture("NeonVertical.png");
+		BulletDeque.back()->scaleSpaceShipBullet(0.25, 0.25);
+		BulletDeque.back()->setSpaceShipBulletPosition(POS.x + 26, POS.y - 40);
+
+		BulletDeque.push_back(new SpaceShipBullet(CurrentBullet));
+		BulletDeque.back()->setTexture("NeonVertical.png");
+		BulletDeque.back()->scaleSpaceShipBullet(0.25, 0.25);
+		BulletDeque.back()->setSpaceShipBulletPosition(POS.x + 13, POS.y - 40); // Front Bullet
+	}
 }
 
 int MatthewsNamespace::SpaceShip::IterateThroughBullets(sf::RenderWindow* WINDOW, std::vector<EnemySpaceShip*>& Enemies) {
@@ -34,7 +65,7 @@ int MatthewsNamespace::SpaceShip::IterateThroughBullets(sf::RenderWindow* WINDOW
 					scoreByPlayer++;
 					// Decrease life + set death behavior
 					(*Enemies.at(j)->getLife()) -= *BulletDeque.at(i)->getDamage();
-					if (*Enemies.at(j)->getLife() == 0) {
+					if (*Enemies.at(j)->getLife() + EnemySpaceShip::LIFE_SUPPLIER == 0) {
 						BoomBox::WindowCollisionEffect(); // Will generate a collision sound effect
 						Enemies.at(j)->Die();
 						EnemySpaceShip* Iterator = Enemies.at(j);

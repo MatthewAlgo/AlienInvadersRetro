@@ -52,7 +52,7 @@ namespace MatthewsNamespace {
 		short LevelUpConstant = 0;
 
 	public:
-
+		static int ANIMATION_INSTANCES;
 		AnimationWindow(const std::string TITLE, int W, int H) : WindowTitle(TITLE), MainWindowVideo(new sf::VideoMode(W, H)),
 			WWidth(static_cast<int>(W)), WHeight(static_cast<int>(H)), ParticleGenerator(new MatthewsNamespace::RandomParticlesGenerator()) {
 			// MainWindowThread = new sf::Thread(std::bind(&MainWindowClass::MainWindowThreadExecution,this, *TripleHolder));

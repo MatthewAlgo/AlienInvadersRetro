@@ -1,9 +1,10 @@
 #include "EnemySpaceShip.h"
 #include "BoomBox.h"
 
+int MatthewsNamespace::EnemySpaceShip::LIFE_SUPPLIER = 0;
 void MatthewsNamespace::EnemySpaceShip::Shoot() {
 	shooter_clock++;
-	if (shooter_clock % 70 == 0) {
+	if (shooter_clock % 100 == 0) {
 		// Load the bullet -> The bullet receives some speed of +10 per frame
 		EnemySpaceShipBullet CurrentBullet;
 		BulletDeque.push_back(new EnemySpaceShipBullet(CurrentBullet));
@@ -22,7 +23,7 @@ void MatthewsNamespace::EnemySpaceShip::GenerateInDrawFunctionOfMainWindow(sf::R
 	this->setTexture(SpaceShipTextureName);
 	this->getSpaceShipSprite()->setScale(0.1, 0.1);
 	Window->draw(*this->getSpaceShipSprite());
-	this->POS.speed = 0.1;
+	this->POS.speed = 0.5;
 }
 void MatthewsNamespace::EnemySpaceShip::DrawBulletsInWindow(sf::RenderWindow* Window, int XSSPos, int YSSPos, short& SS) {
 	for (int i{}; i < BulletDeque.size(); ++i) {
@@ -45,11 +46,11 @@ void MatthewsNamespace::EnemySpaceShip::DrawBulletsInWindow(sf::RenderWindow* Wi
 				Window->draw(ExplosionSprite); // Will output a white square -> Retro style explosion
 				BoomBox::WindowCollisionEffect(); // Will generate a collision sound effect
 
-				SS--; SS -= EnemySpaceShipBullet::DAMAGE_SUPPLIER; if (SS <= 0) {}
+				SS--; SS -= EnemySpaceShipBullet::DAMAGE_SUPPLIER; if (SS <= 0) { BoomBox::GameOverEffect(); SS = 0; }
 				// The Player Died
 				// Show game over screen or whatever
 
-			// We delete the bullet and deliver damage to the main space shuttle
+				// We delete the bullet and deliver damage to the main space shuttle
 				EnemySpaceShipBullet* it = this->BulletDeque.at(i);
 				delete it; it = nullptr; this->BulletDeque.erase(this->BulletDeque.begin() + i);
 			}

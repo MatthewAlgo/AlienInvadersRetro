@@ -76,7 +76,7 @@ namespace MatthewsNamespace {
 
 		void setMainWindowSize(int X, int Y) { WinSize.x = X; WinSize.y = Y; }
 
-		void Shoot();
+		void Shoot(int PlayerScore);
 		int IterateThroughBullets(sf::RenderWindow* WINDOW, std::vector<EnemySpaceShip*>& Enemies);
 		void FreeUpMemoryBullets();
 

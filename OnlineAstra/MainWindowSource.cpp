@@ -31,30 +31,38 @@ void MatthewsNamespace::MainWindowClass::MainWindowThreadExecution(TripleItemHol
 				break;
 			}
 			else if (Event->type == sf::Event::MouseButtonReleased) {
-				std::cout << "Mouse button clicked\n";
 				std::unique_ptr<sf::Mouse> MyMouse = std::make_unique<sf::Mouse>();
-				std::cout << "XPos: " << MyMouse.get()->getPosition(*WindowPointer).x << " ; YPos: "
-					<< MyMouse.get()->getPosition(*WindowPointer).y << "\n";
+
 				// 630-250 - BR first button | 340-150 - TL first button
-				if (MyMouse.get()->getPosition(*WindowPointer).x >= 340 && MyMouse.get()->getPosition(*WindowPointer).x <= 630 
-						&& MyMouse.get()->getPosition(*WindowPointer).y >= 150 && MyMouse.get()->getPosition(*WindowPointer).y <= 250) {
-					
+				if (MyMouse.get()->getPosition(*WindowPointer).x >= 340 && MyMouse.get()->getPosition(*WindowPointer).x <= 630
+					&& MyMouse.get()->getPosition(*WindowPointer).y >= 150 && MyMouse.get()->getPosition(*WindowPointer).y <= 250) {
+
 					// The first (start) button is pressed -> Launch the game (animation window) and player stats window
-					MatthewsNamespace::AnimationWindow* MyMainWindow
-						= new MatthewsNamespace::AnimationWindow("AlienInvasionRetro", 1000, 700);
-					if (BoomBox::getMainTheme()->getStatus() == sf::SoundSource::Status::Playing) {
-						BoomBox::getMainTheme()->pause();
+					if (AnimationWindow::ANIMATION_INSTANCES == 0) {
+						if (BoomBox::getMainTheme()->getStatus() == sf::SoundSource::Status::Playing) {
+							BoomBox::getMainTheme()->pause();
+						}
+						MatthewsNamespace::AnimationWindow* MyMainWindow
+							= new MatthewsNamespace::AnimationWindow("AlienInvasionRetro", 1000, 700);
+						BoomBox::WindowSoundEffect();
 					}
-					BoomBox::WindowSoundEffect();
+					else {
+						// Cannot open window due to too many instances
+						BoomBox::WrongSelectionEffect();
+					}
 				}
 				// 760-380 - BR second button | 200-280 - TL first button
 				if (MyMouse.get()->getPosition(*WindowPointer).x >= 200 && MyMouse.get()->getPosition(*WindowPointer).x <= 760
 					&& MyMouse.get()->getPosition(*WindowPointer).y >= 280 && MyMouse.get()->getPosition(*WindowPointer).y <= 380) {
-					std::cout << "Second Button Pressed\n";
-
 					// Open The BoomBoxWindow
-					MatthewsNamespace::BoomBox* MyBoomBox = new MatthewsNamespace::BoomBox("BoomBox - Retro", 500, 500);
-					BoomBox::WindowSoundEffect();
+					if (BoomBox::BOOMBOX_INSTANCES == 0) {
+						MatthewsNamespace::BoomBox* MyBoomBox = new MatthewsNamespace::BoomBox("BoomBox - Retro", 500, 500);
+						BoomBox::WindowSoundEffect();
+					}
+					else {
+						// Cannot open boombox due to too many instances
+						BoomBox::WrongSelectionEffect();
+					}
 				}
 
 			}
@@ -64,16 +72,16 @@ void MatthewsNamespace::MainWindowClass::MainWindowThreadExecution(TripleItemHol
 					break;
 				}
 			}
-			else if (Event->type == sf::Event::TextEntered){
+			else if (Event->type == sf::Event::TextEntered) {
 				if (Event->text.unicode < 128)
 					break;
 			}
 		}
 		// Check For BoomBox Status
-		if(BoomBox::IS_MUSIC_ENABLED)
-			if (!(BoomBox::getMainTheme()->getStatus() == sf::SoundSource::Status::Playing)) {
-				BoomBox::getMainTheme()->play();
-			}
+		if ((BoomBox::IS_MUSIC_ENABLED == 1) && ((BoomBox::getMainTheme()->getStatus() == sf::SoundSource::Status::Paused)
+			|| (BoomBox::getMainTheme()->getStatus() == sf::SoundSource::Status::Stopped)) && (AnimationWindow::ANIMATION_INSTANCES == 0)){
+				BoomBox::StartMainThemeSong();
+		}
 		std::free(Event);
 		MatthewsNamespace::MainWindowClass::DrawInsideMainWindow(ITEM_HOLDER.getA(), ITEM_HOLDER.getB(), ITEM_HOLDER.getC());
 	}
@@ -144,8 +152,5 @@ void MatthewsNamespace::MainWindowClass::RenderTextures(DoubleItemHolder<sf::Ren
 	TextBTN2.setPosition(WWidth / 4.25, WHeight / 1.5);
 
 
-}
-void MatthewsNamespace::ShowWindowDetails(sf::RenderWindow* WINDOW, MatthewsNamespace::MainWindowClass* C) {
-	// Nothing here for now
 }
 #pragma endregion MAINCLASS_FUNC_IMPLEMENTATIONS

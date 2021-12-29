@@ -50,9 +50,10 @@ namespace MatthewsNamespace {
 		sf::VideoMode* MainWindowVideo;
 		
 	public:
+		static int BOOMBOX_INSTANCES;
 		typedef struct DJ {
-			sf::Sound CollisionSound, ShootSound, PShootSound, DeathSound, WelcomeSound, WindowSound, MainThemeSound, SOUND_MAIN;
-			sf::SoundBuffer CollisionSoundBuffer, ShootSoundBuffer, PShootSoundBuffer, DeathSoundBuffer, WelcomeSoundBuffer, WindowSoundBuffer, MainThemeSoundBuffer, SOUND_MAIN_BUFFER;
+			sf::Sound CollisionSound, ShootSound, PShootSound, DeathSound, WelcomeSound, WindowSound, MainThemeSound, WrongSelectionSound, UpgradeSound, EvilSound, SOUND_MAIN;
+			sf::SoundBuffer CollisionSoundBuffer, ShootSoundBuffer, PShootSoundBuffer, DeathSoundBuffer, WelcomeSoundBuffer, WindowSoundBuffer, MainThemeSoundBuffer,WrongSelectionSoundBuffer, UpgradeSoundBuffer, EvilSoundBuffer, SOUND_MAIN_BUFFER;
 		};
 
 		// Static variables -> The boombox can be accessed from anywhere
@@ -96,9 +97,17 @@ namespace MatthewsNamespace {
 			LocalDJ->WindowSoundBuffer.loadFromFile("BoomBoxRes/WindowEffect.wav"); // Window effect
 			LocalDJ->WindowSound.setBuffer(LocalDJ->WindowSoundBuffer);
 			LocalDJ->CollisionSoundBuffer.loadFromFile("BoomBoxRes/CollisionEffect.wav"); // Collision effect
-			LocalDJ->CollisionSound.setBuffer(LocalDJ->CollisionSoundBuffer);
-			LocalDJ->MainThemeSoundBuffer.loadFromFile("Music/WelcomeMusic.wav"); // Collision effect
-			LocalDJ->MainThemeSound.setBuffer(LocalDJ->MainThemeSoundBuffer);
+			LocalDJ->CollisionSound.setBuffer(LocalDJ->CollisionSoundBuffer); 
+			LocalDJ->WrongSelectionSoundBuffer.loadFromFile("BoomBoxRes/WrongSelection.wav"); // Wrong window selection effect
+			LocalDJ->WrongSelectionSound.setBuffer(LocalDJ->WrongSelectionSoundBuffer);
+			LocalDJ->DeathSoundBuffer.loadFromFile("BoomBoxRes/GameOverSound.wav"); // Game over effect
+			LocalDJ->DeathSound.setBuffer(LocalDJ->DeathSoundBuffer);
+			LocalDJ->WelcomeSoundBuffer.loadFromFile("BoomBoxRes/GameStart.wav"); // Welcome effect
+			LocalDJ->WelcomeSound.setBuffer(LocalDJ->WelcomeSoundBuffer);
+			LocalDJ->UpgradeSoundBuffer.loadFromFile("BoomBoxRes/GameStart.wav"); // Upgrade effect
+			LocalDJ->UpgradeSound.setBuffer(LocalDJ->UpgradeSoundBuffer);
+			LocalDJ->EvilSoundBuffer.loadFromFile("BoomBoxRes/EvilEffect.wav"); // Upgrade effect
+			LocalDJ->EvilSound.setBuffer(LocalDJ->EvilSoundBuffer);
 		}
 		static void ShootSoundEffect() { // Effects
 			if (IS_SOUND_ENABLED)
@@ -116,11 +125,34 @@ namespace MatthewsNamespace {
 			if (IS_SOUND_ENABLED)
 				LocalDJ->CollisionSound.play();
 		}
+		static void WrongSelectionEffect() { // Effects
+			if (IS_SOUND_ENABLED)
+				LocalDJ->WrongSelectionSound.play();
+		}
+		static void GameOverEffect() { // Effects
+			if (IS_SOUND_ENABLED)
+				LocalDJ->DeathSound.play();
+		}
+		static void WelcomeEffect() { // Effects
+			if (IS_SOUND_ENABLED)
+				LocalDJ->WelcomeSound.play();
+		}
+		static void UpgradeEffect() { // Effects
+			if (IS_SOUND_ENABLED)
+				LocalDJ->UpgradeSound.play();
+		}
+		static void EvilEffect() {
+			if (IS_SOUND_ENABLED)
+				LocalDJ->EvilSound.play();
+		}
+
 
 		static void StartMainThemeSong() { // Main Theme
 			if (IS_MUSIC_ENABLED) {
-				LocalDJ->MainThemeSound.play();
-				LocalDJ->MainThemeSound.setLoop(true);
+				LocalDJ->MainThemeSoundBuffer.loadFromFile("Music/WelcomeMusic.wav"); // Music effect
+				LocalDJ->MainThemeSound.setBuffer(LocalDJ->MainThemeSoundBuffer);
+				BoomBox::getMainTheme()->play();
+				BoomBox::getMainTheme()->setLoop(true);
 			}
 		}
 		static sf::Sound* getMainTheme() {
@@ -132,7 +164,7 @@ namespace MatthewsNamespace {
 			std::string path = "./Music";
 			for (const auto& entry : fs::directory_iterator(path)) {
 				std::string path_string{ entry.path().u8string() };
-				if (strstr(path_string.c_str(), ".wav") != NULL) {
+				if (strstr(path_string.c_str(), ".wav") != NULL && strstr(path_string.c_str(), "WelcomeMusic.wav") == NULL) {
 					WavFilesFromDirectory.push_back(path_string); // Outputs the .wav files in the current directory
 				}
 			}
@@ -149,6 +181,57 @@ namespace MatthewsNamespace {
 				return WavFilesFromDirectory.at(choice);
 			}
 			return {};
+		}
+		// Render WAV sine wave inside the BoomBox
+		void RenderLinesInCurrentFrame(sf::RenderWindow* BoomBoxWindow, int precision) {
+			// Render the lines for MainTheme if it is playing
+			if (IS_MUSIC_ENABLED) {
+				if (BoomBox::getMainTheme()->getStatus() == sf::SoundSource::Status::Playing) {
+					// Get the current position
+					sf::Time CurrentPosion = BoomBox::getMainTheme()->getPlayingOffset();
+					// We need to do the math to get the current samples to be displayed
+					const sf::Int16* LocalBuffer = BoomBox::getMainTheme()->getBuffer()->getSamples();
+					int CurrentPosInSamples = CurrentPosion.asMilliseconds() * BoomBox::getMainTheme()->getBuffer()->getSampleCount() / BoomBox::getMainTheme()->getBuffer()->getDuration().asMilliseconds();
+
+					// Build a vector of Lines
+					for (int i{}; i < BoomBoxWindow->getSize().y; i += precision) {
+						if (CurrentPosInSamples + i - 3 >= 0 && CurrentPosInSamples + i - 2 >= 0 && CurrentPosInSamples + i - 1 >= 0 && CurrentPosInSamples + i >= 0 && CurrentPosInSamples + i < BoomBox::getMainTheme()->getBuffer()->getSampleCount()) {
+							sf::VertexArray Vertex(sf::LinesStrip, 2);
+							// Vertex[0].position = sf::Vector2f(LocalBuffer[CurrentPosInSamples + i - 3] / 100, LocalBuffer[CurrentPosInSamples + i - 2] / 100 + BoomBoxWindow->getSize().y/2);
+							// Vertex[1].position = sf::Vector2f(LocalBuffer[CurrentPosInSamples + i - 1]/100, LocalBuffer[CurrentPosInSamples + i]/100+ BoomBoxWindow->getSize().y / 2);
+							Vertex[0].position = sf::Vector2f(i, LocalBuffer[CurrentPosInSamples + i - 2] / 200 + BoomBoxWindow->getSize().y / 2);
+							Vertex[1].position = sf::Vector2f(i + 1, LocalBuffer[CurrentPosInSamples + i] / 200 + BoomBoxWindow->getSize().y / 2);
+
+							Vertex[0].color = sf::Color::Green;
+							Vertex[1].color = sf::Color::Green;
+							BoomBoxWindow->draw(Vertex);
+						}
+					}
+				}
+				if (LocalDJ->SOUND_MAIN.getStatus() == sf::SoundSource::Status::Playing) {
+					// Get the current position
+					sf::Time CurrentPosion = LocalDJ->SOUND_MAIN.getPlayingOffset();
+					// We need to do the math to get the current samples to be displayed
+					const sf::Int16* LocalBuffer = LocalDJ->SOUND_MAIN.getBuffer()->getSamples();
+					int CurrentPosInSamples = CurrentPosion.asMilliseconds() * LocalDJ->SOUND_MAIN.getBuffer()->getSampleCount() / LocalDJ->SOUND_MAIN.getBuffer()->getDuration().asMilliseconds();
+
+					// Build a vector of Lines
+					for (int i{}; i < BoomBoxWindow->getSize().y; i += precision) {
+						if (CurrentPosInSamples + i - 3 >= 0 && CurrentPosInSamples + i - 2 >= 0 && CurrentPosInSamples + i - 1 >= 0 && CurrentPosInSamples + i >= 0 && CurrentPosInSamples + i < LocalDJ->SOUND_MAIN.getBuffer()->getSampleCount()) {
+							sf::VertexArray Vertex(sf::LinesStrip, 2);
+							// Vertex[0].position = sf::Vector2f(LocalBuffer[CurrentPosInSamples + i - 3] / 100, LocalBuffer[CurrentPosInSamples + i - 2] / 100 + BoomBoxWindow->getSize().y/2);
+							// Vertex[1].position = sf::Vector2f(LocalBuffer[CurrentPosInSamples + i - 1]/100, LocalBuffer[CurrentPosInSamples + i]/100+ BoomBoxWindow->getSize().y / 2);
+							Vertex[0].position = sf::Vector2f(i, LocalBuffer[CurrentPosInSamples + i - 2] / 200 + BoomBoxWindow->getSize().y / 2);
+							Vertex[1].position = sf::Vector2f(i + 1, LocalBuffer[CurrentPosInSamples + i] / 200 + BoomBoxWindow->getSize().y / 2);
+
+							Vertex[0].color = sf::Color::Green;
+							Vertex[1].color = sf::Color::Green;
+							BoomBoxWindow->draw(Vertex);
+						}
+					}
+				}
+			}
+		
 		}
 	};
 }

@@ -1,8 +1,10 @@
 #include "BoomBox.h"
 
-
+// Static variable compilation
 bool MatthewsNamespace::BoomBox::IS_SOUND_ENABLED = 1;
 bool MatthewsNamespace::BoomBox::IS_MUSIC_ENABLED = 1;
+int MatthewsNamespace::BoomBox::BOOMBOX_INSTANCES = 0;
+
 std::unique_ptr<MatthewsNamespace::BoomBox::DJ> MatthewsNamespace::BoomBox::LocalDJ = std::make_unique<DJ>();
 std::vector<std::string> MatthewsNamespace::BoomBox::WavFilesFromDirectory;
 
@@ -12,7 +14,7 @@ void MatthewsNamespace::BoomBox::MainWindowThreadExecution(TripleItemHolder<sf::
 	ITEM_HOLDER.getA()->setActive(true);
 	ITEM_HOLDER.getA()->setVerticalSyncEnabled(true);
 	ITEM_HOLDER.getA()->setFramerateLimit(60);
-
+	BOOMBOX_INSTANCES = 1;
 	//////// Create a separate thread to render the textures
 	std::unique_ptr<sf::Thread> ThreadRenderer = std::make_unique<sf::Thread>([&]()->void {
 		// TODO: Render Textures Asynchronously
@@ -30,14 +32,13 @@ void MatthewsNamespace::BoomBox::MainWindowThreadExecution(TripleItemHolder<sf::
 			if (Event->type == sf::Event::Closed) {
 				ITEM_HOLDER.getA()->close();
 				BoomBox::WindowSoundEffect();
+				BOOMBOX_INSTANCES = 0;
 				break;
 			}
 			else if (Event->type == sf::Event::MouseButtonReleased) {
-				std::cout << "Mouse button clicked\n";
 				std::unique_ptr<sf::Mouse> MyMouse = std::make_unique<sf::Mouse>();
-				std::cout << "XPos: " << MyMouse.get()->getPosition(*WindowPointer).x << " ; YPos: "
-					<< MyMouse.get()->getPosition(*WindowPointer).y << "\n";
-				if(MyMouse.get()->getPosition(*WindowPointer).x >= 100 && MyMouse.get()->getPosition(*WindowPointer).y <=400)
+
+				if(MyMouse.get()->getPosition(*WindowPointer).x >= 100 && MyMouse.get()->getPosition(*WindowPointer).x <=400)
 					if (MyMouse.get()->getPosition(*WindowPointer).y >= 350 && MyMouse.get()->getPosition(*WindowPointer).y <= 450) {
 						// Bottom button
 						if (MatthewsNamespace::BoomBox::IS_SOUND_ENABLED) {
@@ -45,7 +46,7 @@ void MatthewsNamespace::BoomBox::MainWindowThreadExecution(TripleItemHolder<sf::
 						}
 						else { MatthewsNamespace::BoomBox::IS_SOUND_ENABLED = 1; }
 					}
-				if (MyMouse.get()->getPosition(*WindowPointer).x >= 100 && MyMouse.get()->getPosition(*WindowPointer).y <= 400)
+				if (MyMouse.get()->getPosition(*WindowPointer).x >= 100 && MyMouse.get()->getPosition(*WindowPointer).x <= 400)
 					if (MyMouse.get()->getPosition(*WindowPointer).y >= 20 && MyMouse.get()->getPosition(*WindowPointer).y <= 120) {
 						// Upper button
 						if (MatthewsNamespace::BoomBox::IS_MUSIC_ENABLED) {
@@ -69,6 +70,7 @@ void MatthewsNamespace::BoomBox::MainWindowThreadExecution(TripleItemHolder<sf::
 				if (Event->key.code == sf::Keyboard::Escape) { // Exits on ESC pressed
 					ITEM_HOLDER.getA()->close();
 					BoomBox::WindowSoundEffect();
+					BOOMBOX_INSTANCES = 0;
 					break;
 				}
 			}
@@ -89,6 +91,9 @@ void MatthewsNamespace::BoomBox::DrawInsideMainWindow(sf::RenderWindow* WINDOW, 
 	WINDOW->draw(SoundBox.SPRITE); // The box for sound
 	WINDOW->draw(MusicBox.SPRITE); // The box for music
 
+	WINDOW->draw(SoundToggleText);
+	WINDOW->draw(MusicToggleText);
+	RenderLinesInCurrentFrame(WINDOW, 1);
 	WINDOW->display();
 }
 void MatthewsNamespace::BoomBox::RenderTextures(DoubleItemHolder<sf::RenderWindow, BoomBox> ITEM_HOLDER) {
@@ -119,4 +124,21 @@ void MatthewsNamespace::BoomBox::RenderTextures(DoubleItemHolder<sf::RenderWindo
 	MusicBox.SPRITE.setTexture(MusicBox.TEXTURE);
 	MusicBox.SPRITE.setPosition(WWidth / 4 - 25, WHeight / 2);
 	MusicBox.SPRITE.setScale(0.5, 0.5);
+
+	// Render Font for text
+	GlobalWindowFont.loadFromFile("Fonts/Emulogic.ttf");
+	SoundToggleText.setFont(GlobalWindowFont);
+	SoundToggleText.setString("Sound Toggle");
+	SoundToggleText.setCharacterSize(15);
+	SoundToggleText.setFillColor(sf::Color::Blue);
+	SoundToggleText.setStyle(sf::Text::Bold);
+	SoundToggleText.setPosition(WWidth / 4 + 30, WHeight / 1.3 );
+
+	MusicToggleText.setFont(GlobalWindowFont);
+	MusicToggleText.setString("Music Toggle");
+	MusicToggleText.setCharacterSize(15);
+	MusicToggleText.setFillColor(sf::Color::Blue);
+	MusicToggleText.setStyle(sf::Text::Bold);
+	MusicToggleText.setPosition(WWidth / 4+30, WHeight / 8);
+	
 }

@@ -69,7 +69,6 @@ namespace MatthewsNamespace {
 		void MainWindowThreadExecution(TripleItemHolder<sf::RenderWindow, sf::Thread, MainWindowClass>& ITEM_HOLDER);
 		void DrawInsideMainWindow(sf::RenderWindow* WINDOW, sf::Thread* WINTHREAD, MainWindowClass* C);
 		void RenderTextures(DoubleItemHolder<sf::RenderWindow, MainWindowClass> ITEM_HOLDER);
-		friend void ShowWindowDetails(sf::RenderWindow* WINDOW, MainWindowClass* C);
 		
 	};
 };

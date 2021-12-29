@@ -29,6 +29,7 @@ namespace MatthewsNamespace {
 	public:
 		// Each spaceship has a queue of bullets
 		std::deque<EnemySpaceShipBullet*> BulletDeque;
+		static int LIFE_SUPPLIER;
 
 		inline void MoveUp() { if (POS.y - 5 > 0 && POS.y - 5 < WinSize.y) POS.y -= 5; SpriteOfSpaceShip.setPosition(POS.x, POS.y); }
 		inline void MoveDown() { if (POS.y + 5 > 0 && POS.y + 5 < WinSize.y) POS.y += 5; SpriteOfSpaceShip.setPosition(POS.x, POS.y); }

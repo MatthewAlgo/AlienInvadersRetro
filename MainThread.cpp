@@ -11,7 +11,7 @@
 // C++17 Application -> Used the filesystem header from standard library
 int main()
 {
-	// Linux Compile: g++ MainThread.cpp MainWindowSource.cpp -lsfml-graphics -lsfml-system -lsfml-window -lsfml-audio -lX11
+	// Linux Compile: g++ -g -v AnimationWindowSource.cpp BoomBoxSource.cpp EnemySpaceShipSource.cpp MainThread.cpp MainWindowSource.cpp SpaceShipSource.cpp -lsfml-graphics -lsfml-window -lsfml-audio -lsfml-system -lX11
 
 #ifdef __linux__
 	XInitThreads();

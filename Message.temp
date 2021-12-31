@@ -16,9 +16,9 @@ Fisiere folosite din dotarea limbajului:
 9 Headere, 6 Surse
 
 Probleme cunoscute plus cauze:
-Circuralitatea fisierelor header din surse ingreuneaza procesul de compilare. Se poate rezolva prin adaugarea unor surse suplimentare si transferarea corpurilor functiilor in prototipuri in headere.
+Circularitatea fisierelor header din surse ingreuneaza procesul de compilare. Se poate rezolva prin adaugarea unor surse suplimentare si transferarea corpurilor functiilor in prototipuri in headere.
 
-Functii inovatoare: 
+Functii forte: 
 Sistem propriu de eliberare dinamica a memoriei din pointeri, prin folosirea smart pointers si dealocarea tuturor pointerilor care ies din scop si ocupa memoria programului ulterior fara posibilitate de stergere a memoriei.
 
 Incarcarea tuturor texturilor si sprite-urilor la inceputul programului si folosirea unor buffere speciale din cadrul SFML pentru a multiplica si a accesa usor memorie in cadrul main loop-ului fara realocare - imbunatatirea performantei programului

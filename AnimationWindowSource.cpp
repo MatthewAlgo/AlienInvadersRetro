@@ -53,12 +53,12 @@ void MatthewsNamespace::AnimationWindow::MainWindowThreadExecution(TripleItemHol
 					}
 					BoomBox::WindowSoundEffect();
 					if ((BoomBox::getMainTheme()->getStatus() == sf::SoundSource::Status::Paused) || (BoomBox::getMainTheme()->getStatus() == sf::SoundSource::Status::Stopped)) {
-						BoomBox::StartMainThemeSong();
+						// BoomBox::StartMainThemeSong();
+                        BoomBox::getMainTheme()->play();
 					}
 					// Stop the BoomBox for AnimationWindow
 					if (BoomBox::LocalDJ->SOUND_MAIN.getStatus() == sf::SoundSource::Status::Playing) {
 						BoomBox::LocalDJ->SOUND_MAIN.stop();
-						BoomBox::LocalDJ->SOUND_MAIN.resetBuffer();
 					}
 
 				    // Clean up memory occupied by the window
@@ -88,14 +88,14 @@ void MatthewsNamespace::AnimationWindow::MainWindowThreadExecution(TripleItemHol
 						}
 						BoomBox::WindowSoundEffect(); // Start the BoomBox for MainWindow
 						if ((BoomBox::getMainTheme()->getStatus() == sf::SoundSource::Status::Paused) || (BoomBox::getMainTheme()->getStatus() == sf::SoundSource::Status::Stopped)) {
-							BoomBox::StartMainThemeSong();
-						}
-						// Stop the BoomBox for AnimationWinow
-						if (BoomBox::LocalDJ->SOUND_MAIN.getStatus() == sf::SoundSource::Status::Playing) {
-							BoomBox::LocalDJ->SOUND_MAIN.stop();
-							BoomBox::LocalDJ->SOUND_MAIN.resetBuffer();
-						}
-						// Clean up memory occupied by the window
+						    // BoomBox::StartMainThemeSong();
+                            BoomBox::getMainTheme()->play();
+					    }
+					    // Stop the BoomBox for AnimationWindow
+					    if (BoomBox::LocalDJ->SOUND_MAIN.getStatus() == sf::SoundSource::Status::Playing) {
+						    BoomBox::LocalDJ->SOUND_MAIN.stop();
+					    }
+                        // Clean up memory occupied by the window
                         ITEM_HOLDER.getA()->close();
 			            delete MainWindowVideo;
 
@@ -105,7 +105,7 @@ void MatthewsNamespace::AnimationWindow::MainWindowThreadExecution(TripleItemHol
 					catch (std::exception E) {}
 					break;
 				}
-				
+
 			}
 			else if (Event->type == sf::Event::TextEntered) {
 				if (Event->text.unicode == 'w') {} // Keyboard input control here
@@ -217,7 +217,7 @@ void MatthewsNamespace::AnimationWindow::DrawInsideMainWindow(sf::RenderWindow* 
 		WINDOW->draw(PresskeyText);
 		EnemySpaceShipBullet::DAMAGE_SUPPLIER = 0; // Reset the enemy damage supplier
 		EnemySpaceShip::LIFE_SUPPLIER = 0; // Reset the enemy life supplier
-		
+
 	}
 
 	WINDOW->display();
@@ -234,7 +234,7 @@ void MatthewsNamespace::AnimationWindow::RenderTextures(DoubleItemHolder<sf::Ren
 	SpaceShip1.setSpaceShipPosition(WWidth / 2, WHeight / 2);
 	SpaceShip1.getSpaceShipSprite()->setTexture(*SpaceShip1.getSpaceShipTexture());
 	SpaceShip1.getSpaceShipSprite()->setScale(0.2, 0.2);
-	
+
 	// Render Font for text
 	GlobalWindowFont.loadFromFile("Fonts/Emulogic.ttf");
 	ScoreText.setFont(GlobalWindowFont);
@@ -260,7 +260,7 @@ void MatthewsNamespace::AnimationWindow::RenderTextures(DoubleItemHolder<sf::Ren
 	PresskeyText.setFillColor(sf::Color::Yellow);
 	PresskeyText.setStyle(sf::Text::Bold);
 	PresskeyText.setPosition(WWidth / 4+30, WHeight / 2 );
-	
+
 	LevelUpText.setFont(GlobalWindowFont);
 	LevelUpText.setCharacterSize(50);
 	LevelUpText.setFillColor(sf::Color::Yellow);

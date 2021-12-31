@@ -48,7 +48,7 @@ namespace MatthewsNamespace {
 		sf::RenderWindow* WindowPointer = NULL;
 		sf::Thread* MainWindowThread;
 		sf::VideoMode* MainWindowVideo;
-		
+
 	public:
 		static int BOOMBOX_INSTANCES;
 		typedef struct DJ {
@@ -65,7 +65,7 @@ namespace MatthewsNamespace {
 		BoomBox(const std::string TITLE, int W, int H) : WindowTitle(TITLE), MainWindowVideo(new sf::VideoMode(W, H)),
 			WWidth(static_cast<int>(W)), WHeight(static_cast<int>(H)) {
 			// MainWindowThread = new sf::Thread(std::bind(&MainWindowClass::MainWindowThreadExecution,this, *TripleHolder));
-		
+
 			MainWindowThread = new sf::Thread([&]() -> void {
 				// Create window and set active
 				BoomBox::WindowPointer = new sf::RenderWindow(*MainWindowVideo, WindowTitle, sf::Style::Titlebar | sf::Style::Close); // Create the window
@@ -82,7 +82,7 @@ namespace MatthewsNamespace {
 			// LoadAudioInMemory();
 		};
 
-		~BoomBox() = default; // Auto deallocate smart pointers 
+		~BoomBox() = default; // Auto deallocate smart pointers
 
 		void MainWindowThreadExecution(TripleItemHolder<sf::RenderWindow, sf::Thread, BoomBox>& ITEM_HOLDER);
 		void DrawInsideMainWindow(sf::RenderWindow* WINDOW, sf::Thread* WINTHREAD, BoomBox* C);
@@ -97,7 +97,7 @@ namespace MatthewsNamespace {
 			LocalDJ->WindowSoundBuffer.loadFromFile("BoomBoxRes/WindowEffect.wav"); // Window effect
 			LocalDJ->WindowSound.setBuffer(LocalDJ->WindowSoundBuffer);
 			LocalDJ->CollisionSoundBuffer.loadFromFile("BoomBoxRes/CollisionEffect.wav"); // Collision effect
-			LocalDJ->CollisionSound.setBuffer(LocalDJ->CollisionSoundBuffer); 
+			LocalDJ->CollisionSound.setBuffer(LocalDJ->CollisionSoundBuffer);
 			LocalDJ->WrongSelectionSoundBuffer.loadFromFile("BoomBoxRes/WrongSelection.wav"); // Wrong window selection effect
 			LocalDJ->WrongSelectionSound.setBuffer(LocalDJ->WrongSelectionSoundBuffer);
 			LocalDJ->DeathSoundBuffer.loadFromFile("BoomBoxRes/GameOverSound.wav"); // Game over effect
@@ -186,12 +186,15 @@ namespace MatthewsNamespace {
 		void RenderLinesInCurrentFrame(sf::RenderWindow* BoomBoxWindow, int precision) {
 			// Render the lines for MainTheme if it is playing
 			if (IS_MUSIC_ENABLED) {
+                try{  // The song might have been deleted in another thread
 				if (BoomBox::getMainTheme()->getStatus() == sf::SoundSource::Status::Playing) {
 					// Get the current position
-					sf::Time CurrentPosion = BoomBox::getMainTheme()->getPlayingOffset();
+					sf::Time CurrentPosition = BoomBox::getMainTheme()->getPlayingOffset();
 					// We need to do the math to get the current samples to be displayed
-					const sf::Int16* LocalBuffer = BoomBox::getMainTheme()->getBuffer()->getSamples();
-					int CurrentPosInSamples = CurrentPosion.asMilliseconds() * BoomBox::getMainTheme()->getBuffer()->getSampleCount() / BoomBox::getMainTheme()->getBuffer()->getDuration().asMilliseconds();
+					// Freeze the thread until samples are available
+                    // while(CurrentPosition.asSeconds()==0){}
+                    const sf::Int16* LocalBuffer = BoomBox::getMainTheme()->getBuffer()->getSamples();
+					int CurrentPosInSamples = CurrentPosition.asMilliseconds() * BoomBox::getMainTheme()->getBuffer()->getSampleCount() / BoomBox::getMainTheme()->getBuffer()->getDuration().asMilliseconds();
 
 					// Build a vector of Lines
 					for (int i{}; i < BoomBoxWindow->getSize().y; i += precision) {
@@ -210,10 +213,13 @@ namespace MatthewsNamespace {
 				}
 				if (LocalDJ->SOUND_MAIN.getStatus() == sf::SoundSource::Status::Playing) {
 					// Get the current position
-					sf::Time CurrentPosion = LocalDJ->SOUND_MAIN.getPlayingOffset();
+					sf::Time CurrentPosition = LocalDJ->SOUND_MAIN.getPlayingOffset();
 					// We need to do the math to get the current samples to be displayed
-					const sf::Int16* LocalBuffer = LocalDJ->SOUND_MAIN.getBuffer()->getSamples();
-					int CurrentPosInSamples = CurrentPosion.asMilliseconds() * LocalDJ->SOUND_MAIN.getBuffer()->getSampleCount() / LocalDJ->SOUND_MAIN.getBuffer()->getDuration().asMilliseconds();
+
+					// Freeze the thread until samples are available
+                    // while(CurrentPosition.asSeconds()==0){}
+                    const sf::Int16* LocalBuffer = LocalDJ->SOUND_MAIN.getBuffer()->getSamples();
+					int CurrentPosInSamples = CurrentPosition.asMilliseconds() * LocalDJ->SOUND_MAIN.getBuffer()->getSampleCount() / LocalDJ->SOUND_MAIN.getBuffer()->getDuration().asMilliseconds();
 
 					// Build a vector of Lines
 					for (int i{}; i < BoomBoxWindow->getSize().y; i += precision) {
@@ -230,10 +236,11 @@ namespace MatthewsNamespace {
 						}
 					}
 				}
-			}
-		
+			    }catch (std::exception E){}
+
 		}
-	};
+	}
+};
 }
 #pragma endregion ANIMATION_WINDOW
 

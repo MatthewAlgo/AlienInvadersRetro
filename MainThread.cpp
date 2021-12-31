@@ -11,7 +11,7 @@
 // C++17 Application -> Used the filesystem header from standard library
 int main()
 {
-	// Linux Compile: g++ -g -v AnimationWindowSource.cpp BoomBoxSource.cpp EnemySpaceShipSource.cpp MainThread.cpp MainWindowSource.cpp SpaceShipSource.cpp -lsfml-graphics -lsfml-window -lsfml-audio -lsfml-system -lX11
+    // Linux compile: g++ -g -std=c++17 -v AnimationWindowSource.cpp BoomBoxSource.cpp EnemySpaceShipSource.cpp MainThread.cpp MainWindowSource.cpp SpaceShipSource.cpp -lsfml-graphics -lsfml-window -lsfml-audio -lsfml-system -lX11 -o AlienInvadersRetro.elf 
 
 #ifdef __linux__
 	XInitThreads();

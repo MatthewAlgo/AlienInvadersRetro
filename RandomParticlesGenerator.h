@@ -31,7 +31,7 @@ namespace MatthewsNamespace {
 		}
 		void Generate() {
 			generator_clock++;
-			if (generator_clock % 1 == 0) {
+			if (generator_clock % 2 == 0) {
 				WhiteParticle Xparticle; sf::Texture Texture; Texture.loadFromFile("WhiteDot.png");
 				VectorOfParticles.push_back(new WhiteParticle(Xparticle));
 				VectorOfParticles.back()->speed = Mersenne_Twister_Generator(5, 20);

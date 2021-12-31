@@ -39,11 +39,7 @@ void MatthewsNamespace::AnimationWindow::MainWindowThreadExecution(TripleItemHol
 		sf::Event* Event = new sf::Event();
 		while (ITEM_HOLDER.getA()->pollEvent(*Event)) {
 			if (Event->type == sf::Event::Closed) {
-				// Clean up memory occupied by the window
 				try {
-					ITEM_HOLDER.getA()->close();
-					delete MainWindowVideo;
-
 					// Delete players and their bullets
 					for (int i{}; i < VectorOfEnemies.size(); ++i) {
 						VectorOfEnemies.at(i)->Die();
@@ -64,7 +60,12 @@ void MatthewsNamespace::AnimationWindow::MainWindowThreadExecution(TripleItemHol
 						BoomBox::LocalDJ->SOUND_MAIN.stop();
 						BoomBox::LocalDJ->SOUND_MAIN.resetBuffer();
 					}
-					ANIMATION_INSTANCES = 0;
+
+				    // Clean up memory occupied by the window
+					ITEM_HOLDER.getA()->close();
+					delete MainWindowVideo;
+
+                    ANIMATION_INSTANCES = 0;
 					MainWindowThread->terminate();
 				}
 				catch (std::exception E) {}
@@ -74,10 +75,6 @@ void MatthewsNamespace::AnimationWindow::MainWindowThreadExecution(TripleItemHol
 			else if (Event->type == sf::Event::KeyPressed) {
 				if (Event->key.code == sf::Keyboard::Escape) { // Exits on ESC pressed
 					try {
-						// Clean up memory occupied by the window
-						ITEM_HOLDER.getA()->close();
-						delete MainWindowVideo;
-
 						// Delete players and their bullets
 						for (int i{}; i < VectorOfEnemies.size(); ++i) {
 							VectorOfEnemies.at(i)->Die();
@@ -98,7 +95,11 @@ void MatthewsNamespace::AnimationWindow::MainWindowThreadExecution(TripleItemHol
 							BoomBox::LocalDJ->SOUND_MAIN.stop();
 							BoomBox::LocalDJ->SOUND_MAIN.resetBuffer();
 						}
-						ANIMATION_INSTANCES = 0;
+						// Clean up memory occupied by the window
+                        ITEM_HOLDER.getA()->close();
+			            delete MainWindowVideo;
+
+                        ANIMATION_INSTANCES = 0;
 						MainWindowThread->terminate();
 					}
 					catch (std::exception E) {}

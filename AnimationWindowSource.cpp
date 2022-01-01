@@ -60,6 +60,7 @@ void MatthewsNamespace::AnimationWindow::MainWindowThreadExecution(TripleItemHol
 					if (BoomBox::LocalDJ->SOUND_MAIN.getStatus() == sf::SoundSource::Status::Playing) {
 						BoomBox::LocalDJ->SOUND_MAIN.stop();
 					}
+					delete this->ParticleGenerator; // Delete the random particles generator
 
 				    // Clean up memory occupied by the window
 					ITEM_HOLDER.getA()->close();
@@ -95,6 +96,8 @@ void MatthewsNamespace::AnimationWindow::MainWindowThreadExecution(TripleItemHol
 					    if (BoomBox::LocalDJ->SOUND_MAIN.getStatus() == sf::SoundSource::Status::Playing) {
 						    BoomBox::LocalDJ->SOUND_MAIN.stop();
 					    }
+						delete this->ParticleGenerator; // Delete the random particles generator
+
                         // Clean up memory occupied by the window
                         ITEM_HOLDER.getA()->close();
 			            delete MainWindowVideo;

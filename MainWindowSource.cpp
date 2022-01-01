@@ -28,6 +28,7 @@ void MatthewsNamespace::MainWindowClass::MainWindowThreadExecution(TripleItemHol
 		sf::Event* Event = new sf::Event();
 		while (ITEM_HOLDER.getA()->pollEvent(*Event)) {
 			if (Event->type == sf::Event::Closed) {
+				delete this->ParticleGenerator; // Delete the random particles generator
 				ITEM_HOLDER.getA()->close();
 				exit(EXIT_SUCCESS);
 				break;
@@ -70,6 +71,7 @@ void MatthewsNamespace::MainWindowClass::MainWindowThreadExecution(TripleItemHol
 			}
 			else if (Event->type == sf::Event::KeyPressed) {
 				if (Event->key.code == sf::Keyboard::Escape) { // Exits on ESC pressed
+					delete this->ParticleGenerator; // Delete the random particles generator
 					ITEM_HOLDER.getA()->close();
 					exit(EXIT_SUCCESS);
 					break;

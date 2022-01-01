@@ -31,7 +31,7 @@ void MatthewsNamespace::MainWindowClass::MainWindowThreadExecution(TripleItemHol
 				BoomBox::IS_MUSIC_ENABLED = false; // Disable music
 				BoomBox::LocalDJ->SOUND_MAIN.stop();
 				BoomBox::LocalDJ->MainThemeSound.stop();
-				sf::sleep(sf::Time(sf::seconds(0.1))); // Sleep for 100 ms
+				sf::sleep(sf::Time(sf::seconds(1))); // Sleep for 1s
 				delete this->ParticleGenerator; // Delete the random particles generator
 				ITEM_HOLDER.getA()->close(); // Deletes the animation window
 				exit(EXIT_SUCCESS);
@@ -77,7 +77,7 @@ void MatthewsNamespace::MainWindowClass::MainWindowThreadExecution(TripleItemHol
 					BoomBox::IS_MUSIC_ENABLED = false; // Disable music
 					BoomBox::LocalDJ->SOUND_MAIN.stop();
 					BoomBox::LocalDJ->MainThemeSound.stop();
-					sf::sleep(sf::Time(sf::seconds(0.1))); // Sleep for 100 ms
+					sf::sleep(sf::Time(sf::seconds(1))); // Sleep for 1s
 					delete this->ParticleGenerator; // Delete the random particles generator
 					ITEM_HOLDER.getA()->close(); // Deletes the animation window
 

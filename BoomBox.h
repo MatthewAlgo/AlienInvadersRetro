@@ -193,21 +193,23 @@ namespace MatthewsNamespace {
 					// We need to do the math to get the current samples to be displayed
 					// Freeze the thread until samples are available
                     // while(CurrentPosition.asSeconds()==0){}
-                    const sf::Int16* LocalBuffer = BoomBox::getMainTheme()->getBuffer()->getSamples();
-					int CurrentPosInSamples = CurrentPosition.asMilliseconds() * BoomBox::getMainTheme()->getBuffer()->getSampleCount() / BoomBox::getMainTheme()->getBuffer()->getDuration().asMilliseconds();
+					if (BoomBox::getMainTheme()->getBuffer() != nullptr || BoomBox::getMainTheme()->getBuffer() != NULL) {
+						const sf::Int16* LocalBuffer = BoomBox::getMainTheme()->getBuffer()->getSamples();
+						int CurrentPosInSamples = CurrentPosition.asMilliseconds() * BoomBox::getMainTheme()->getBuffer()->getSampleCount() / BoomBox::getMainTheme()->getBuffer()->getDuration().asMilliseconds();
 
-					// Build a vector of Lines
-					for (int i{}; i < BoomBoxWindow->getSize().y; i += precision) {
-						if (CurrentPosInSamples + i - 3 >= 0 && CurrentPosInSamples + i - 2 >= 0 && CurrentPosInSamples + i - 1 >= 0 && CurrentPosInSamples + i >= 0 && CurrentPosInSamples + i < BoomBox::getMainTheme()->getBuffer()->getSampleCount()) {
-							sf::VertexArray Vertex(sf::LinesStrip, 2);
-							// Vertex[0].position = sf::Vector2f(LocalBuffer[CurrentPosInSamples + i - 3] / 100, LocalBuffer[CurrentPosInSamples + i - 2] / 100 + BoomBoxWindow->getSize().y/2);
-							// Vertex[1].position = sf::Vector2f(LocalBuffer[CurrentPosInSamples + i - 1]/100, LocalBuffer[CurrentPosInSamples + i]/100+ BoomBoxWindow->getSize().y / 2);
-							Vertex[0].position = sf::Vector2f(i, LocalBuffer[CurrentPosInSamples + i - 2] / 200 + BoomBoxWindow->getSize().y / 2);
-							Vertex[1].position = sf::Vector2f(i + 1, LocalBuffer[CurrentPosInSamples + i] / 200 + BoomBoxWindow->getSize().y / 2);
+						// Build a vector of Lines
+						for (int i{}; i < BoomBoxWindow->getSize().y; i += precision) {
+							if (CurrentPosInSamples + i - 3 >= 0 && CurrentPosInSamples + i - 2 >= 0 && CurrentPosInSamples + i - 1 >= 0 && CurrentPosInSamples + i >= 0 && CurrentPosInSamples + i < BoomBox::getMainTheme()->getBuffer()->getSampleCount()) {
+								sf::VertexArray Vertex(sf::LinesStrip, 2);
+								// Vertex[0].position = sf::Vector2f(LocalBuffer[CurrentPosInSamples + i - 3] / 100, LocalBuffer[CurrentPosInSamples + i - 2] / 100 + BoomBoxWindow->getSize().y/2);
+								// Vertex[1].position = sf::Vector2f(LocalBuffer[CurrentPosInSamples + i - 1]/100, LocalBuffer[CurrentPosInSamples + i]/100+ BoomBoxWindow->getSize().y / 2);
+								Vertex[0].position = sf::Vector2f(i, LocalBuffer[CurrentPosInSamples + i - 2] / 200 + BoomBoxWindow->getSize().y / 2);
+								Vertex[1].position = sf::Vector2f(i + 1, LocalBuffer[CurrentPosInSamples + i] / 200 + BoomBoxWindow->getSize().y / 2);
 
-							Vertex[0].color = sf::Color::Green;
-							Vertex[1].color = sf::Color::Green;
-							BoomBoxWindow->draw(Vertex);
+								Vertex[0].color = sf::Color::Green;
+								Vertex[1].color = sf::Color::Green;
+								BoomBoxWindow->draw(Vertex);
+							}
 						}
 					}
 				}
@@ -217,22 +219,25 @@ namespace MatthewsNamespace {
 					// We need to do the math to get the current samples to be displayed
 
 					// Freeze the thread until samples are available
-                    // while(CurrentPosition.asSeconds()==0){}
-                    const sf::Int16* LocalBuffer = LocalDJ->SOUND_MAIN.getBuffer()->getSamples();
-					int CurrentPosInSamples = CurrentPosition.asMilliseconds() * LocalDJ->SOUND_MAIN.getBuffer()->getSampleCount() / LocalDJ->SOUND_MAIN.getBuffer()->getDuration().asMilliseconds();
+					// while(CurrentPosition.asSeconds()==0){}
+					if (LocalDJ->SOUND_MAIN.getBuffer() != nullptr || LocalDJ->SOUND_MAIN.getBuffer()!=NULL){
+						const sf::Int16* LocalBuffer = LocalDJ->SOUND_MAIN.getBuffer()->getSamples();
 
-					// Build a vector of Lines
-					for (int i{}; i < BoomBoxWindow->getSize().y; i += precision) {
-						if (CurrentPosInSamples + i - 3 >= 0 && CurrentPosInSamples + i - 2 >= 0 && CurrentPosInSamples + i - 1 >= 0 && CurrentPosInSamples + i >= 0 && CurrentPosInSamples + i < LocalDJ->SOUND_MAIN.getBuffer()->getSampleCount()) {
-							sf::VertexArray Vertex(sf::LinesStrip, 2);
-							// Vertex[0].position = sf::Vector2f(LocalBuffer[CurrentPosInSamples + i - 3] / 100, LocalBuffer[CurrentPosInSamples + i - 2] / 100 + BoomBoxWindow->getSize().y/2);
-							// Vertex[1].position = sf::Vector2f(LocalBuffer[CurrentPosInSamples + i - 1]/100, LocalBuffer[CurrentPosInSamples + i]/100+ BoomBoxWindow->getSize().y / 2);
-							Vertex[0].position = sf::Vector2f(i, LocalBuffer[CurrentPosInSamples + i - 2] / 200 + BoomBoxWindow->getSize().y / 2);
-							Vertex[1].position = sf::Vector2f(i + 1, LocalBuffer[CurrentPosInSamples + i] / 200 + BoomBoxWindow->getSize().y / 2);
+						int CurrentPosInSamples = CurrentPosition.asMilliseconds() * LocalDJ->SOUND_MAIN.getBuffer()->getSampleCount() / LocalDJ->SOUND_MAIN.getBuffer()->getDuration().asMilliseconds();
 
-							Vertex[0].color = sf::Color::Green;
-							Vertex[1].color = sf::Color::Green;
-							BoomBoxWindow->draw(Vertex);
+						// Build a vector of Lines
+						for (int i{}; i < BoomBoxWindow->getSize().y; i += precision) {
+							if (CurrentPosInSamples + i - 3 >= 0 && CurrentPosInSamples + i - 2 >= 0 && CurrentPosInSamples + i - 1 >= 0 && CurrentPosInSamples + i >= 0 && CurrentPosInSamples + i < LocalDJ->SOUND_MAIN.getBuffer()->getSampleCount()) {
+								sf::VertexArray Vertex(sf::LinesStrip, 2);
+								// Vertex[0].position = sf::Vector2f(LocalBuffer[CurrentPosInSamples + i - 3] / 100, LocalBuffer[CurrentPosInSamples + i - 2] / 100 + BoomBoxWindow->getSize().y/2);
+								// Vertex[1].position = sf::Vector2f(LocalBuffer[CurrentPosInSamples + i - 1]/100, LocalBuffer[CurrentPosInSamples + i]/100+ BoomBoxWindow->getSize().y / 2);
+								Vertex[0].position = sf::Vector2f(i, LocalBuffer[CurrentPosInSamples + i - 2] / 200 + BoomBoxWindow->getSize().y / 2);
+								Vertex[1].position = sf::Vector2f(i + 1, LocalBuffer[CurrentPosInSamples + i] / 200 + BoomBoxWindow->getSize().y / 2);
+
+								Vertex[0].color = sf::Color::Green;
+								Vertex[1].color = sf::Color::Green;
+								BoomBoxWindow->draw(Vertex);
+							}
 						}
 					}
 				}

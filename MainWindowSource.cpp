@@ -28,10 +28,12 @@ void MatthewsNamespace::MainWindowClass::MainWindowThreadExecution(TripleItemHol
 		sf::Event* Event = new sf::Event();
 		while (ITEM_HOLDER.getA()->pollEvent(*Event)) {
 			if (Event->type == sf::Event::Closed) {
+				BoomBox::IS_MUSIC_ENABLED = false; // Disable music
+				BoomBox::LocalDJ->SOUND_MAIN.stop();
+				BoomBox::LocalDJ->MainThemeSound.stop();
+				sf::sleep(sf::Time(sf::seconds(0.1))); // Sleep for 100 ms
 				delete this->ParticleGenerator; // Delete the random particles generator
 				ITEM_HOLDER.getA()->close(); // Deletes the animation window
-				BoomBox::LocalDJ->SOUND_MAIN.stop(); // Stop all the buffers so they can be freed up inside the thread
-				BoomBox::LocalDJ->MainThemeSound.stop();
 				exit(EXIT_SUCCESS);
 			}
 			else if (Event->type == sf::Event::MouseButtonReleased) {
@@ -72,10 +74,13 @@ void MatthewsNamespace::MainWindowClass::MainWindowThreadExecution(TripleItemHol
 			}
 			else if (Event->type == sf::Event::KeyPressed) {
 				if (Event->key.code == sf::Keyboard::Escape) { // Exits on ESC pressed
-					delete this->ParticleGenerator; // Delete the random particles generator
-					ITEM_HOLDER.getA()->close(); // Deletes the animation window
+					BoomBox::IS_MUSIC_ENABLED = false; // Disable music
 					BoomBox::LocalDJ->SOUND_MAIN.stop();
 					BoomBox::LocalDJ->MainThemeSound.stop();
+					sf::sleep(sf::Time(sf::seconds(0.1))); // Sleep for 100 ms
+					delete this->ParticleGenerator; // Delete the random particles generator
+					ITEM_HOLDER.getA()->close(); // Deletes the animation window
+
 					exit(EXIT_SUCCESS);
 				}
 			}

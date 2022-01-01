@@ -12,7 +12,7 @@ void MatthewsNamespace::MainWindowClass::MainWindowThreadExecution(TripleItemHol
 	ITEM_HOLDER.getA()->setActive(true);
 	ITEM_HOLDER.getA()->setVerticalSyncEnabled(true);
 	ITEM_HOLDER.getA()->setFramerateLimit(60);
-	
+
 	//////// Create a separate thread to render the textures
 	std::unique_ptr<sf::Thread> ThreadRenderer = std::make_unique<sf::Thread>([&]()->void {
 			// TODO: Render Textures Asynchronously
@@ -29,9 +29,10 @@ void MatthewsNamespace::MainWindowClass::MainWindowThreadExecution(TripleItemHol
 		while (ITEM_HOLDER.getA()->pollEvent(*Event)) {
 			if (Event->type == sf::Event::Closed) {
 				delete this->ParticleGenerator; // Delete the random particles generator
-				ITEM_HOLDER.getA()->close();
+				ITEM_HOLDER.getA()->close(); // Deletes the animation window
+				BoomBox::LocalDJ->SOUND_MAIN.stop(); // Stop all the buffers so they can be freed up inside the thread
+				BoomBox::LocalDJ->MainThemeSound.stop();
 				exit(EXIT_SUCCESS);
-				break;
 			}
 			else if (Event->type == sf::Event::MouseButtonReleased) {
 				std::unique_ptr<sf::Mouse> MyMouse = std::make_unique<sf::Mouse>();
@@ -72,9 +73,10 @@ void MatthewsNamespace::MainWindowClass::MainWindowThreadExecution(TripleItemHol
 			else if (Event->type == sf::Event::KeyPressed) {
 				if (Event->key.code == sf::Keyboard::Escape) { // Exits on ESC pressed
 					delete this->ParticleGenerator; // Delete the random particles generator
-					ITEM_HOLDER.getA()->close();
+					ITEM_HOLDER.getA()->close(); // Deletes the animation window
+					BoomBox::LocalDJ->SOUND_MAIN.stop();
+					BoomBox::LocalDJ->MainThemeSound.stop();
 					exit(EXIT_SUCCESS);
-					break;
 				}
 			}
 			else if (Event->type == sf::Event::TextEntered) {
@@ -99,14 +101,14 @@ void MatthewsNamespace::MainWindowClass::MainWindowThreadExecution(TripleItemHol
 void MatthewsNamespace::MainWindowClass::DrawInsideMainWindow(sf::RenderWindow* WINDOW, sf::Thread* WINTHREAD, MatthewsNamespace::MainWindowClass* C) {
 	WINDOW->clear(sf::Color::Red);
 	WINDOW->draw(BackGround->SPRITE);
-	
+
 	// Draw the buttons
 	WINDOW->draw(MenuBox1.SPRITE);
 	WINDOW->draw(MenuBox2.SPRITE);
 	WINDOW->draw(TextBTN1);
 	WINDOW->draw(TextBTN2);
 
-	// For the particle generator 
+	// For the particle generator
 	ParticleGenerator->Generate();
 
 	ParticleGenerator->InLoopForParticles(WINDOW);
@@ -144,7 +146,7 @@ void MatthewsNamespace::MainWindowClass::RenderTextures(DoubleItemHolder<sf::Ren
 	GreetingText.setFillColor(sf::Color::Blue);
 	GreetingText.setStyle(sf::Text::Bold);
 	GreetingText.setPosition(WWidth / 5, WHeight / 100);
-	
+
 	// For the first button
 	TextBTN1.setFont(GlobalWindowFont);
 	TextBTN1.setString("Start");
